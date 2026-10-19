@@ -64,7 +64,7 @@
             position: absolute;
             top: 16px;
             right: 16px;
-            width: 320px;
+            width: 335px;
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -83,7 +83,7 @@
         .hud-top-row {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         /* Primary Play/Pause Circle Button */
@@ -172,7 +172,7 @@
             100% { height: 10px; }
         }
 
-        /* Secondary Utility Icon Buttons (Restart & BGM Toggle) */
+        /* Secondary Utility Icon Buttons */
         .icon-btn {
             width: 34px;
             height: 34px;
@@ -184,6 +184,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            flex-shrink: 0;
             transition: background 0.2s, color 0.2s, border-color 0.2s;
         }
         .icon-btn:hover {
@@ -229,6 +230,60 @@
             background: linear-gradient(90deg, #d4af37, #f5d78e);
             border-radius: 99px;
             transition: width 0.1s linear;
+        }
+
+        /* Collapsible Floor & Ceiling JPG Texture Customizer Panel */
+        #texture-panel {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 12px;
+        }
+        #texture-panel.open {
+            display: block;
+        }
+        .tex-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .tex-row:last-child {
+            margin-bottom: 0;
+        }
+        .tex-label {
+            color: #e0e0e0;
+            font-weight: 500;
+            min-width: 58px;
+        }
+        .tex-upload-btn {
+            background: rgba(212, 175, 55, 0.16);
+            border: 1px solid var(--gold-Soft);
+            color: #f5d78e;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: background 0.15s, border-color 0.15s;
+            white-space: nowrap;
+        }
+        .tex-upload-btn:hover {
+            background: rgba(212, 175, 55, 0.3);
+            border-color: var(--gold);
+        }
+        .tex-repeat-input {
+            width: 75px;
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+        .tex-repeat-val {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            min-width: 28px;
+            text-align: right;
         }
 
         /* Upgraded Frosted-Glass D-Pad Controls */
@@ -290,7 +345,7 @@
                 right: auto;
                 transform: translateX(-50%);
                 width: calc(100vw - 36px);
-                max-width: 340px;
+                max-width: 345px;
             }
         }
 
@@ -313,7 +368,7 @@
         </div>
     </div>
 
-    <!-- Sleek Audio Player HUD -->
+    <!-- Sleek Audio Player HUD + Texture Customizer -->
     <div id="audio-hud">
         <div class="hud-top-row">
             <button id="btn-play-toggle" class="play-toggle-btn" title="Play / Pause Story" disabled>
@@ -349,6 +404,13 @@
                     <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                 </svg>
             </button>
+
+            <!-- Toggle Floor/Ceiling Texture Picker Panel -->
+            <button id="btn-tex-panel" class="icon-btn" title="Change Floor & Ceiling JPG Textures">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+                </svg>
+            </button>
         </div>
 
         <div class="progress-row">
@@ -357,6 +419,24 @@
                 <div id="progress-fill" class="progress-fill"></div>
             </div>
             <span id="time-total" class="time-stamp">0:00</span>
+        </div>
+
+        <!-- Live Floor & Ceiling JPG Texture Loader Drawer -->
+        <div id="texture-panel">
+            <div class="tex-row">
+                <span class="tex-label">Floor</span>
+                <label class="tex-upload-btn" for="input-floor-jpg">Choose .JPG</label>
+                <input type="file" id="input-floor-jpg" accept=".jpg,.jpeg,image/jpeg,image/png" style="display:none;">
+                <input type="range" id="slider-floor-repeat" class="tex-repeat-input" min="1" max="24" value="10" title="Floor Tile Repeat">
+                <span id="val-floor-repeat" class="tex-repeat-val">10x</span>
+            </div>
+            <div class="tex-row">
+                <span class="tex-label">Ceiling</span>
+                <label class="tex-upload-btn" for="input-ceiling-jpg">Choose .JPG</label>
+                <input type="file" id="input-ceiling-jpg" accept=".jpg,.jpeg,image/jpeg,image/png" style="display:none;">
+                <input type="range" id="slider-ceiling-repeat" class="tex-repeat-input" min="1" max="24" value="8" title="Ceiling Tile Repeat">
+                <span id="val-ceiling-repeat" class="tex-repeat-val">8x</span>
+            </div>
         </div>
     </div>
 
@@ -381,6 +461,21 @@
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
         import { VRButton } from 'https://unpkg.com/three@0.160.0/examples/jsm/webxr/VRButton.js';
+
+        // ==========================================
+        // 0. ROOM SURFACE JPG TEXTURE CONFIGURATION
+        // ==========================================
+        // Change any of these file paths to point to your own .jpg files!
+        const ROOM_TEXTURES = {
+            wallJpg:    'images/wall.jpg',
+            wallRepeat: { x: 8, y: 2 },
+
+            floorJpg:    'images/floor.jpg',
+            floorRepeat: { x: 10, y: 10 },
+
+            ceilingJpg:    'images/ceiling.jpg',
+            ceilingRepeat: { x: 8, y: 8 }
+        };
 
         // ==========================================
         // 1. GALLERY DATA CONFIGURATION
@@ -437,7 +532,6 @@
         scene.background = new THREE.Color(0x0d0d11); 
 
         const playerRig = new THREE.Group();
-        // Start player slightly south of the center sculpture, facing North
         playerRig.position.set(0, 1.2, 4.2); 
         scene.add(playerRig);
 
@@ -463,24 +557,117 @@
         scene.add(centerLight);
 
         // ==========================================
-        // 3. ENVIRONMENT & WEB ASSETS (Textures)
+        // 3. ENVIRONMENT & ROOM JPG TEXTURE SYSTEM
         // ==========================================
         const roomSize = 40;
         const wallHeight = 10;
         const textureLoader = new THREE.TextureLoader();
         textureLoader.setCrossOrigin('anonymous');
 
-        const wallTexture = textureLoader.load('images/wall.jpg');
-        wallTexture.wrapS = THREE.RepeatWrapping;
-        wallTexture.wrapT = THREE.RepeatWrapping;
-        wallTexture.repeat.set(8, 2); 
+        /**
+         * Helper to load and configure any .jpg texture with tiling repeat & sRGB color
+         */
+        function loadTiledJpg(url, repeatX, repeatY, onSuccess, onError) {
+            const tex = textureLoader.load(
+                url,
+                (loadedTex) => {
+                    loadedTex.wrapS = THREE.RepeatWrapping;
+                    loadedTex.wrapT = THREE.RepeatWrapping;
+                    loadedTex.repeat.set(repeatX, repeatY);
+                    loadedTex.colorSpace = THREE.SRGBColorSpace;
+                    loadedTex.needsUpdate = true;
+                    if (onSuccess) onSuccess(loadedTex);
+                },
+                undefined,
+                (err) => {
+                    if (onError) onError(err);
+                }
+            );
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(repeatX, repeatY);
+            tex.colorSpace = THREE.SRGBColorSpace;
+            return tex;
+        }
 
-        const floorTexture = textureLoader.load('images/floor.jpg');
-        floorTexture.wrapS = THREE.RepeatWrapping;
-        floorTexture.wrapT = THREE.RepeatWrapping;
-        floorTexture.repeat.set(10, 10);
+        // 1. Floor Mesh & JPG Texture
+        const floorMat = new THREE.MeshStandardMaterial({ 
+            color: 0xffffff,
+            roughness: 0.75,
+            metalness: 0.05
+        });
+        const floorGeo = new THREE.PlaneGeometry(roomSize, roomSize);
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        scene.add(floor);
 
-        // Web Asset: Rich Hardwood Grain from Official Three.js CDN
+        // 2. Ceiling Mesh & JPG Texture
+        const ceilingMat = new THREE.MeshStandardMaterial({ 
+            color: 0xffffff,
+            roughness: 0.85,
+            metalness: 0.05
+        });
+        const ceilingGeo = new THREE.PlaneGeometry(roomSize, roomSize);
+        const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
+        ceiling.rotation.x = Math.PI / 2;
+        ceiling.position.y = wallHeight;
+        scene.add(ceiling);
+
+        // 3. Outer Gallery Walls (Top & Bottom faces disabled so Floor & Ceiling planes show cleanly!)
+        const wallTexture = loadTiledJpg(ROOM_TEXTURES.wallJpg, ROOM_TEXTURES.wallRepeat.x, ROOM_TEXTURES.wallRepeat.y);
+        const wallSideMat = new THREE.MeshStandardMaterial({ 
+            map: wallTexture, 
+            side: THREE.BackSide,
+            roughness: 0.88
+        });
+        const hiddenCapMat = new THREE.MeshBasicMaterial({ visible: false });
+        const roomGeo = new THREE.BoxGeometry(roomSize, wallHeight, roomSize);
+        // BoxGeometry material order: [Right, Left, Top, Bottom, Front, Back]
+        const roomMaterials = [
+            wallSideMat,  // East wall
+            wallSideMat,  // West wall
+            hiddenCapMat, // Top cap disabled (uses dedicated ceiling mesh)
+            hiddenCapMat, // Bottom cap disabled (uses dedicated floor mesh)
+            wallSideMat,  // South wall
+            wallSideMat   // North wall
+        ];
+        const roomMesh = new THREE.Mesh(roomGeo, roomMaterials);
+        roomMesh.position.y = wallHeight / 2;
+        scene.add(roomMesh);
+
+        // Public functions to change Floor or Ceiling JPG at any time
+        function setFloorTextureJpg(jpgUrl, repeatX = ROOM_TEXTURES.floorRepeat.x, repeatY = ROOM_TEXTURES.floorRepeat.y) {
+            loadTiledJpg(jpgUrl, repeatX, repeatY, (tex) => {
+                floorMat.map = tex;
+                floorMat.color.setHex(0xffffff);
+                floorMat.needsUpdate = true;
+            });
+        }
+
+        function setCeilingTextureJpg(jpgUrl, repeatX = ROOM_TEXTURES.ceilingRepeat.x, repeatY = ROOM_TEXTURES.ceilingRepeat.y) {
+            loadTiledJpg(
+                jpgUrl,
+                repeatX,
+                repeatY,
+                (tex) => {
+                    ceilingMat.map = tex;
+                    ceilingMat.color.setHex(0xffffff);
+                    ceilingMat.needsUpdate = true;
+                },
+                () => {
+                    // Fallback dark gallery ceiling if images/ceiling.jpg hasn't been added yet
+                    ceilingMat.map = null;
+                    ceilingMat.color.setHex(0x18181f);
+                    ceilingMat.needsUpdate = true;
+                }
+            );
+        }
+
+        // Load initial Floor and Ceiling JPGs from ROOM_TEXTURES config
+        setFloorTextureJpg(ROOM_TEXTURES.floorJpg, ROOM_TEXTURES.floorRepeat.x, ROOM_TEXTURES.floorRepeat.y);
+        setCeilingTextureJpg(ROOM_TEXTURES.ceilingJpg, ROOM_TEXTURES.ceilingRepeat.x, ROOM_TEXTURES.ceilingRepeat.y);
+
+        // Web Asset: Rich Hardwood Grain from Official Three.js CDN for Museum Frames & Benches
         const woodTexture = textureLoader.load('https://threejs.org/examples/textures/hardwood2_diffuse.jpg');
         woodTexture.wrapS = THREE.RepeatWrapping;
         woodTexture.wrapT = THREE.RepeatWrapping;
@@ -489,36 +676,6 @@
         const woodRoughness = textureLoader.load('https://threejs.org/examples/textures/hardwood2_roughness.jpg');
         woodRoughness.wrapS = THREE.RepeatWrapping;
         woodRoughness.wrapT = THREE.RepeatWrapping;
-
-        // Floor
-        const floorGeo = new THREE.PlaneGeometry(roomSize, roomSize);
-        const floorMat = new THREE.MeshStandardMaterial({ 
-            map: floorTexture, 
-            roughness: 0.75,
-            metalness: 0.05
-        });
-        const floor = new THREE.Mesh(floorGeo, floorMat);
-        floor.rotation.x = -Math.PI / 2;
-        scene.add(floor);
-
-        // Ceiling
-        const ceilingGeo = new THREE.PlaneGeometry(roomSize, roomSize);
-        const ceilingMat = new THREE.MeshStandardMaterial({ color: 0x151519, roughness: 0.9 });
-        const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
-        ceiling.rotation.x = Math.PI / 2;
-        ceiling.position.y = wallHeight;
-        scene.add(ceiling);
-
-        // Outer Gallery Walls
-        const roomGeo = new THREE.BoxGeometry(roomSize, wallHeight, roomSize);
-        const wallMat = new THREE.MeshStandardMaterial({ 
-            map: wallTexture, 
-            side: THREE.BackSide,
-            roughness: 0.88
-        });
-        const roomMesh = new THREE.Mesh(roomGeo, wallMat);
-        roomMesh.position.y = wallHeight / 2;
-        scene.add(roomMesh);
 
         // ==========================================
         // 4. MUSEUM FRAME, AUTO-FIT PLAQUE & 3D AUDIO BUTTON
@@ -553,13 +710,11 @@
             const mouldingWidth = 0.22;
             const mouldingDepth = 0.16;
 
-            // 1. Cream Passe-Partout Matboard Backing
             const matboardGeo = new THREE.BoxGeometry(outerWidth, outerHeight, 0.04);
             const matboardMesh = new THREE.Mesh(matboardGeo, creamMatboardMat);
             matboardMesh.position.z = 0.02;
             frameGroup.add(matboardMesh);
 
-            // 2. Four Hardwood Outer Moulding Bars
             const topBottomGeo = new THREE.BoxGeometry(outerWidth + mouldingWidth * 2, mouldingWidth, mouldingDepth);
             const leftRightGeo = new THREE.BoxGeometry(mouldingWidth, outerHeight, mouldingDepth);
 
@@ -579,7 +734,6 @@
             rightBar.position.set(outerWidth / 2 + mouldingWidth / 2, 0, mouldingDepth / 2);
             frameGroup.add(rightBar);
 
-            // 3. Outer Gold Trim Lip
             const lipThickness = 0.045;
             const lipDepth = 0.11;
             const hLipGeo = new THREE.BoxGeometry(outerWidth + lipThickness * 2, lipThickness, lipDepth);
@@ -601,7 +755,6 @@
             rightLip.position.set(outerWidth / 2 + lipThickness / 2, 0, lipDepth / 2);
             frameGroup.add(rightLip);
 
-            // 4. Inner Bevel Gold Fillet around the Artwork
             const innerLipSize = 0.03;
             const innerHGeo = new THREE.BoxGeometry(artWidth + innerLipSize * 2, innerLipSize, 0.06);
             const innerVGeo = new THREE.BoxGeometry(innerLipSize, artHeight, 0.06);
@@ -622,7 +775,6 @@
             iRight.position.set(artWidth / 2 + innerLipSize / 2, 0, 0.035);
             frameGroup.add(iRight);
 
-            // 5. Four Corner Gold Rosette Accents
             const cornerGeo = new THREE.BoxGeometry(mouldingWidth * 1.05, mouldingWidth * 1.05, mouldingDepth + 0.02);
             const cornerOffset = outerWidth / 2 + mouldingWidth / 2;
             [
@@ -636,7 +788,6 @@
                 frameGroup.add(cornerMesh);
             });
 
-            // 6. Artwork Canvas Plane
             const artTex = textureLoader.load(imageUrl);
             artTex.colorSpace = THREE.SRGBColorSpace;
             const artGeo = new THREE.PlaneGeometry(artWidth, artHeight);
@@ -645,7 +796,6 @@
             artMesh.position.z = 0.052;
             frameGroup.add(artMesh);
 
-            // 7. Overhead Brass Picture Light Fixture
             const lampY = outerHeight / 2 + mouldingWidth + 0.22;
             const armGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.45, 12);
             const armMesh = new THREE.Mesh(armGeo, brushedGoldMat);
@@ -669,25 +819,18 @@
             return frameGroup;
         }
 
-        /**
-         * Auto-Fitting Text Plaque Generator:
-         * Dynamically scales font size, line height, and paragraph spacing so even
-         * 30-line stories never spill outside the gold plaque border.
-         */
         function createTextTexture(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 1024;
             canvas.height = 1360;
             const ctx = canvas.getContext('2d');
 
-            // Rich Charcoal Gradient Background
             const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             grad.addColorStop(0, '#1c1b20');
             grad.addColorStop(1, '#121115');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Outer Gold Border & Fine Inner Hairline
             ctx.strokeStyle = '#d4af37';
             ctx.lineWidth = 8;
             ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
@@ -696,7 +839,6 @@
             ctx.lineWidth = 2;
             ctx.strokeRect(38, 38, canvas.width - 76, canvas.height - 76);
 
-            // Normalize multiple consecutive blank lines so spacing stays consistent
             const normalizedText = text.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
             const rawLines = normalizedText.split('\n');
             const titleText = rawLines[0].trim();
@@ -707,7 +849,6 @@
             const topMargin = 86;
             const bottomLimit = canvas.height - 64;
 
-            // Helper to word-wrap a single line of text at the current ctx.font
             function wrapLine(str) {
                 const words = str.split(/\s+/);
                 const lines = [];
@@ -725,7 +866,6 @@
                 return lines;
             }
 
-            // Step down body font size until the entire text fits within bottomLimit
             let bodyFontSize = 27;
             let titleFontSize = 38;
             let lineHeight = 36;
@@ -741,12 +881,10 @@
                 emptyLineGap = Math.max(8, Math.round(bodyFontSize * 0.55));
                 paraSpacing = Math.max(3, Math.round(bodyFontSize * 0.2));
 
-                // Measure wrapped Title
                 ctx.font = `bold ${titleFontSize}px "Cinzel", Georgia, serif`;
                 wrappedTitle = wrapLine(titleText);
                 const titleBlockHeight = wrappedTitle.length * (titleFontSize * 1.22) + 38;
 
-                // Measure wrapped Body
                 ctx.font = `${bodyFontSize}px "Plus Jakarta Sans", sans-serif`;
                 renderBlocks = [];
                 let bodyHeight = 0;
@@ -755,7 +893,6 @@
                 for (let i = 0; i < bodyRawLines.length; i++) {
                     const clean = bodyRawLines[i].trim();
                     if (!clean) {
-                        // Only add one vertical gap per blank-line group
                         if (!prevWasEmpty && renderBlocks.length > 0) {
                             renderBlocks.push({ type: 'gap', height: emptyLineGap });
                             bodyHeight += emptyLineGap;
@@ -772,17 +909,15 @@
 
                 totalContentHeight = titleBlockHeight + bodyHeight;
                 if (topMargin + totalContentHeight <= bottomLimit) {
-                    break; // Fits cleanly!
+                    break;
                 }
                 bodyFontSize -= 1;
             }
 
-            // Vertically center shorter poems/stories inside the plaque for visual balance
             const availableHeight = bottomLimit - topMargin;
             const extraSpace = Math.max(0, availableHeight - totalContentHeight);
             let y = topMargin + Math.min(50, extraSpace * 0.3);
 
-            // 1. Draw Wrapped Title
             ctx.font = `bold ${titleFontSize}px "Cinzel", Georgia, serif`;
             ctx.fillStyle = '#f5d78e';
             wrappedTitle.forEach((tLine) => {
@@ -790,7 +925,6 @@
                 y += Math.round(titleFontSize * 1.22);
             });
 
-            // Ornamental Gold Divider Line under Title
             y -= Math.round(titleFontSize * 0.25);
             ctx.strokeStyle = '#d4af37';
             ctx.lineWidth = 3;
@@ -800,7 +934,6 @@
             ctx.stroke();
             y += Math.round(lineHeight * 1.05);
 
-            // 2. Draw Body Lines
             ctx.font = `${bodyFontSize}px "Plus Jakarta Sans", sans-serif`;
             ctx.fillStyle = '#e8e6e3';
 
@@ -917,12 +1050,10 @@
                     stationGroup.rotation.y = Math.PI / 2;
                 }
 
-                // 1. Ornate Framed Artwork (Left)
                 const ornateFrame = createOrnateArtworkFrame(item.image);
                 ornateFrame.position.set(-1.85, 0, 0);
                 stationGroup.add(ornateFrame);
 
-                // 2. Framed Story Plaque (Right)
                 const plaqueGroup = new THREE.Group();
                 plaqueGroup.position.set(1.75, 0.18, 0);
 
@@ -939,7 +1070,6 @@
                 plaqueGroup.add(plaqueMesh);
                 stationGroup.add(plaqueGroup);
 
-                // 3. 3D Interactive Audio Pill Button below the Plaque
                 const btnGroup = new THREE.Group();
                 btnGroup.position.set(1.75, -1.86, 0.06);
 
@@ -976,7 +1106,6 @@
             }
         });
 
-        // Re-render plaque textures once Google Fonts finish loading
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(() => {
                 exhibitStations.forEach((st, idx) => {
@@ -990,10 +1119,10 @@
         // ==========================================
         // 5B. GALLERY BENCHES, DECORATIVE PLANTS & CENTER SCULPTURE
         // ==========================================
-        const colliders = []; // Stores { x, z, radius } so the player doesn't walk through furniture
+        const colliders = [];
 
         const leatherMat = new THREE.MeshStandardMaterial({
-            color: 0x261c18, // Deep espresso tufted leather
+            color: 0x261c18,
             roughness: 0.42,
             metalness: 0.08
         });
@@ -1023,33 +1152,26 @@
             side: THREE.DoubleSide
         });
 
-        /**
-         * Creates a Museum Tufted Leather & Hardwood Bench
-         */
         function createGalleryBench() {
             const bench = new THREE.Group();
             const length = 3.6;
             const depth = 1.25;
 
-            // Hardwood Lower Base Frame
             const baseGeo = new THREE.BoxGeometry(length, 0.12, depth);
             const baseMesh = new THREE.Mesh(baseGeo, darkWalnutMat);
             baseMesh.position.y = 0.42;
             bench.add(baseMesh);
 
-            // Brushed Gold Trim Strip under Wood Base
             const trimGeo = new THREE.BoxGeometry(length + 0.02, 0.03, depth + 0.02);
             const trimMesh = new THREE.Mesh(trimGeo, brushedGoldMat);
             trimMesh.position.y = 0.35;
             bench.add(trimMesh);
 
-            // Main Leather Cushion Pad
             const cushionGeo = new THREE.BoxGeometry(length - 0.06, 0.18, depth - 0.06);
             const cushionMesh = new THREE.Mesh(cushionGeo, leatherMat);
             cushionMesh.position.y = 0.57;
             bench.add(cushionMesh);
 
-            // Tufted Cushion Seams & Gold Buttons across the top
             const seamGeo = new THREE.BoxGeometry(0.02, 0.19, depth - 0.04);
             const seamMat = new THREE.MeshStandardMaterial({ color: 0x140e0b, roughness: 0.8 });
             const buttonGeo = new THREE.SphereGeometry(0.025, 10, 10);
@@ -1067,7 +1189,6 @@
                 });
             }
 
-            // Center Low Backrest Bolster with Brass Supports
             const bolsterGeo = new THREE.CylinderGeometry(0.14, 0.14, length - 0.5, 20);
             const bolster = new THREE.Mesh(bolsterGeo, leatherMat);
             bolster.rotation.z = Math.PI / 2;
@@ -1081,7 +1202,6 @@
                 bench.add(post);
             });
 
-            // 4 Tapered Brass & Walnut Legs
             const legGeo = new THREE.CylinderGeometry(0.055, 0.035, 0.36, 14);
             const footGeo = new THREE.CylinderGeometry(0.042, 0.045, 0.06, 14);
             const legX = (length / 2) - 0.28;
@@ -1105,32 +1225,25 @@
             return bench;
         }
 
-        /**
-         * Creates an Architectural Planter Pot with Multi-Layered Tropical Palm Fronds
-         */
         function createDecorativePlant(scaleMultiplier = 1.0) {
             const plantGroup = new THREE.Group();
 
-            // Tapered Architectural Pot
             const potGeo = new THREE.CylinderGeometry(0.56, 0.38, 0.92, 24);
             const potMesh = new THREE.Mesh(potGeo, darkPlanterMat);
             potMesh.position.y = 0.46;
             plantGroup.add(potMesh);
 
-            // Brushed Gold Rim Ring
             const rimGeo = new THREE.TorusGeometry(0.56, 0.032, 12, 32);
             const rimMesh = new THREE.Mesh(rimGeo, brushedGoldMat);
             rimMesh.rotation.x = Math.PI / 2;
             rimMesh.position.y = 0.92;
             plantGroup.add(rimMesh);
 
-            // Soil Disc
             const soilGeo = new THREE.CylinderGeometry(0.53, 0.53, 0.04, 20);
             const soilMesh = new THREE.Mesh(soilGeo, soilMat);
             soilMesh.position.y = 0.89;
             plantGroup.add(soilMesh);
 
-            // 3 Central Woody Stems
             for (let s = 0; s < 3; s++) {
                 const stemH = 0.85 + s * 0.22;
                 const stemGeo = new THREE.CylinderGeometry(0.03, 0.05, stemH, 10);
@@ -1140,7 +1253,6 @@
                 plantGroup.add(stem);
             }
 
-            // Layered Arching Botanical Fronds (3 tiers)
             const tiers = [
                 { count: 7, height: 1.15, tilt: 0.82, len: 1.05, width: 0.34, mat: leafMat },
                 { count: 6, height: 1.45, tilt: 0.55, len: 0.95, width: 0.30, mat: leafLightMat },
@@ -1155,7 +1267,6 @@
                     frondPivot.rotation.y = angle;
                     frondPivot.rotation.x = tier.tilt;
 
-                    // Create a curved leaf blade out of 3 segments for natural droop
                     const segLen = tier.len / 3;
                     let segParent = frondPivot;
 
@@ -1167,7 +1278,7 @@
                         const bladeMesh = new THREE.Mesh(bladeGeo, tier.mat);
                         if (seg > 0) {
                             bladeMesh.position.y = segLen;
-                            bladeMesh.rotation.x = 0.26; // Droop outward
+                            bladeMesh.rotation.x = 0.26;
                         }
                         segParent.add(bladeMesh);
                         segParent = bladeMesh;
@@ -1181,7 +1292,6 @@
             return plantGroup;
         }
 
-        // Place 4 Gallery Benches facing the North, South, East, and West walls
         const benchLocations = [
             { x: 0, z: -7.5, rotY: 0 },
             { x: 0, z: 7.5,  rotY: Math.PI },
@@ -1197,14 +1307,11 @@
             colliders.push({ x, z, radius: 1.9 });
         });
 
-        // Place 8 Decorative Plants (4 in the inner courtyard corners, 4 near the outer room corners)
         const plantLocations = [
-            // Inner courtyard corners flanking the benches
             { x: -6.5, z: -6.5, scale: 1.1 },
             { x: 6.5,  z: -6.5, scale: 1.1 },
             { x: -6.5, z: 6.5,  scale: 1.1 },
             { x: 6.5,  z: 6.5,  scale: 1.1 },
-            // Outer gallery corners
             { x: -16.5, z: -16.5, scale: 1.35 },
             { x: 16.5,  z: -16.5, scale: 1.35 },
             { x: -16.5, z: 16.5,  scale: 1.35 },
@@ -1219,7 +1326,6 @@
             colliders.push({ x, z, radius: 0.85 * scale });
         });
 
-        // Central Museum Plinth & Rotating Golden Sculpture at (0, 0)
         const centerFeature = new THREE.Group();
         const plinthGeo = new THREE.CylinderGeometry(1.15, 1.3, 1.15, 8);
         const plinthMesh = new THREE.Mesh(plinthGeo, darkPlanterMat);
@@ -1253,7 +1359,7 @@
         colliders.push({ x: 0, z: 0, radius: 1.55 });
 
         // ==========================================
-        // 6. AUDIO CONTROLLER, HUD & 3D BUTTON INTERACTION
+        // 6. AUDIO CONTROLLER, HUD & TEXTURE PICKER UI
         // ==========================================
         const bgMusic = new Audio('audio/background.mp3');
         bgMusic.loop = true;
@@ -1274,6 +1380,56 @@
         const progressFill = document.getElementById('progress-fill');
         const timeCurrent = document.getElementById('time-current');
         const timeTotal = document.getElementById('time-total');
+
+        // Live Floor & Ceiling JPG Picker Elements
+        const btnTexPanel = document.getElementById('btn-tex-panel');
+        const texturePanel = document.getElementById('texture-panel');
+        const inputFloorJpg = document.getElementById('input-floor-jpg');
+        const inputCeilingJpg = document.getElementById('input-ceiling-jpg');
+        const sliderFloorRepeat = document.getElementById('slider-floor-repeat');
+        const sliderCeilingRepeat = document.getElementById('slider-ceiling-repeat');
+        const valFloorRepeat = document.getElementById('val-floor-repeat');
+        const valCeilingRepeat = document.getElementById('val-ceiling-repeat');
+
+        btnTexPanel.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = texturePanel.classList.toggle('open');
+            btnTexPanel.classList.toggle('active', isOpen);
+        });
+
+        inputFloorJpg.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const objectUrl = URL.createObjectURL(file);
+            const rep = parseInt(sliderFloorRepeat.value, 10) || 10;
+            setFloorTextureJpg(objectUrl, rep, rep);
+        });
+
+        inputCeilingJpg.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const objectUrl = URL.createObjectURL(file);
+            const rep = parseInt(sliderCeilingRepeat.value, 10) || 8;
+            setCeilingTextureJpg(objectUrl, rep, rep);
+        });
+
+        sliderFloorRepeat.addEventListener('input', (e) => {
+            const rep = parseInt(e.target.value, 10);
+            valFloorRepeat.textContent = `${rep}x`;
+            if (floorMat.map) {
+                floorMat.map.repeat.set(rep, rep);
+                floorMat.map.needsUpdate = true;
+            }
+        });
+
+        sliderCeilingRepeat.addEventListener('input', (e) => {
+            const rep = parseInt(e.target.value, 10);
+            valCeilingRepeat.textContent = `${rep}x`;
+            if (ceilingMat.map) {
+                ceilingMat.map.repeat.set(rep, rep);
+                ceilingMat.map.needsUpdate = true;
+            }
+        });
 
         function formatTime(sec) {
             if (!sec || isNaN(sec)) return '0:00';
@@ -1535,7 +1691,6 @@
             const delta = clock.getDelta();
             const elapsed = clock.getElapsedTime();
 
-            // Slowly rotate the central sculpture
             sculptureGroup.rotation.y = elapsed * 0.35;
             sculptureGroup.position.y = 2.25 + Math.sin(elapsed * 1.5) * 0.06;
 
@@ -1551,11 +1706,9 @@
                 const sign = moveState.forward ? 1 : -1;
                 playerRig.position.addScaledVector(dir, sign * moveSpeed * delta);
 
-                // Keep player inside the outer walls
                 playerRig.position.x = Math.max(-boundaryLimit, Math.min(boundaryLimit, playerRig.position.x));
                 playerRig.position.z = Math.max(-boundaryLimit, Math.min(boundaryLimit, playerRig.position.z));
 
-                // Smoothly slide around benches, planters, and the center plinth
                 for (const col of colliders) {
                     const dx = playerRig.position.x - col.x;
                     const dz = playerRig.position.z - col.z;
@@ -1568,7 +1721,6 @@
                 }
             }
 
-            // Subtle breathing pulse on the active 3D Listen button
             exhibitStations.forEach((st) => {
                 if (st === activeStation && !st.audio.paused) {
                     const pulse = 1 + Math.sin(elapsed * 5) * 0.035;
