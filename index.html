@@ -8,6 +8,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Courier+Prime:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
+    
+    <!-- Import Map fixes VRButton bare 'three' module import error -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
     <style>
         :root {
             --gold: #d4af37;
@@ -21,7 +32,7 @@
             overflow: hidden;
             background-color: #000;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            user-select: none; 
+            user-select: none;
             touch-action: none;
             overscroll-behavior: none;
         }
@@ -148,77 +159,104 @@
     </div>
 
     <script type="module">
-        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-        import { VRButton } from 'https://unpkg.com/three@0.160.0/examples/jsm/webxr/VRButton.js';
+        import * as THREE from 'three';
+        import { VRButton } from 'three/addons/webxr/VRButton.js';
 
         // ==========================================
         // 0. ROOM SURFACE JPG TEXTURE CONFIGURATION
         // ==========================================
-        // Change any of these file paths to point to your own .jpg files!
         const ROOM_TEXTURES = {
-            wallJpg:    'images/wall.jpg',
-            wallRepeat: { x: 8, y: 2 },
+            wallJpg:      'images/wall.jpg',
+            wallRepeat:   { x: 8, y: 2 },
 
-            floorJpg:   'images/floor.jpg',
-            floorRepeat: { x: 10, y: 10 },
+            floorJpg:     'images/floor.jpg',
+            floorRepeat:  { x: 10, y: 10 },
 
             ceilingJpg:   'images/ceiling.jpg',
-            ceilingRepeat: { x: 8, y: 8 }
+            ceilingRepeat:{ x: 8, y: 8 }
         };
 
         // ==========================================
         // 1. GALLERY DATA CONFIGURATION
         // ==========================================
         const galleryItems = [
-            {image: "images/Tracks.jpg", 
+            {
+                image: "images/Tracks.jpg", 
                 text: "Conversations with My Addiction\n\nYou might have thought you’ve won by taking everything from me. But not today.\n\nToday I chose to build back stronger. So I take back my power.\n\nYou thought you had me cornered and isolated. You thought you had me so messed up inside and weak.\n\nBut I chose to go within and confront my traumas one by one.\n\nThe constant negative words whispered in my ear, “you’re not good enough”, “you’re a disgrace”, “no one will want you again”.\n\nToday I chose to be my own best friend and give myself some self-care and love. From this I can flourish. I am worthy of a lot more.\n\nI was only as sick as my secrets. Today they got outed.\n\nNo more manipulation, ducking and diving and lies.\n\nToday I only speak the truth and if you don’t like that then you are not welcome here.\n\nToday I found me.\n\nToday I speak to people that can suggest another approach to life.\n\nToday I can sort through my thoughts and know what is real and what is not.\n\nToday I choose not to wallow in self-pity.\n\nI choose life over death.\n\nI choose freedom over jails or institutions.", 
-                audio: "audio/conversations.m4a" },
-            { image: "images/Roots.jpg",
-             text: "Lend Me Your Ears\n\nMost of my adult life so far has been the best of times and also the worst of times. Living in a bubble, carefree, un-ambitious, uninspired, day-to-day existing, time sapping, a draining path where alcohol came first. I had a cavalier mind about it – putting alcohol before my family relations, mental health, physical health, safety and shelter.\n\nI grew up with addiction in my family, I seen it young but never thought that it would affect my life. Soon I realised that I was repeating the behaviour and becoming even worse.\n\nI didn’t care if I was living in a room or in a bedsit with no windows, as long as I could jam the door locked. It was like I’d rather be nowhere else at times. I thought ‘this is the best I can be today and that is good enough\". Living in the pools you forget about the sea. Drinking became something I just didn’t look forward to anymore - more like something I needed. I became controlled by it and life became unmanageable. My self-care, well-being, functionality, all withered away.\n\nMy drinking went beyond social drinking – drink before, drink during and drink after. I was highly strung, irritable and agitated. What you are not changing, you are choosing and sometimes repeated mistakes become a choice. I thought I could control my drinking. Truth is, I couldn’t. I tried managing it, negotiating with it, outsmarting it but I always lost.\n\nSobriety didn’t truly start for me until I finally realised I had to walk away. Being sober is the choice to stop the behaviour that leads there.\n\nSober isn’t boring;\nSober is remembering every laugh;\nSober is waking up without guilt;\nSober is building the life you were scared to dream about;\nMy changes haven’t always been permanent but the change I want is.",
-             audio: "audio/lend ears.m4a" },
-            { image: "images/Rain.jpg",
-             text: "The Rain\n\nIf in the morning I do not wake it was because of all my pain;\nI hope and wished for brighter days but all I got was the rain.\n\n\nI tried so hard to push through the pain hoping the rain would clear;\npraying for a little bit of sunshine and those brighter days to reappear.\n\n\nAs the days turned to weeks and then into months and the sun still didn’t show, I believed in my heart it was then my time to go.\n\n\nI wanted to stay for longer, to one day make everyone proud; it’s just no matter how hard I try, I can’t outrun this constant dark cloud.\n\n\nI hope one day you can understand it was because of all my pain; my only wish is that I could have been stronger than the rain.",
-             audio: "audio/the rain.m4a" },
-            { image: "images/Time.jpg", 
-             text: "Wednesdays\n\nFriday Wee treat, sweet.\nI’ve earned it… Entitled\nSaturday, feel like shit.\n\nWednesday - no confession.\nFriday… Groundhog Day,\nSaturday, take the edge off.\n\nWednesday… No confession\nBuying bulk, prudence\nFriday, weekend bender.\n\nMonday, take the edge off, functional;\nWednesday, no confession\nBulk again, makes sense\nWatch the pounds, and the pence\nThursday to Sunday foot to the floor.\n\nCan’t work Monday, body sore\nTuesday, take the edge off\nWednesday, I’m beat.\n\nI realised once I used on Wednesdays I had a problem;\nWeekends start earlier, finish later\nNot my fault, become a hater.\n\nWednesday\nMy confession\nHalf truths, denial, blind to progression\nManipulation, control\nTotal obsession.",
-             audio: "audio/wednesdays.m4a" },
-            { image: "images/Frontdoor.jpg",
-             text: "It’s An Inside Job\n\nWe look around and see pain and hurt;\nWe internalise and feel like a piece of dirt.\nWe are only drinking alcohol and doing no harm;\nuntil one day the body sounds the alarm.\nIt’s either jail or hospital or maybe even your last breath;\nThis is real life, not a scene from Macbeth.\nFamily and friends all around us worried and sick;\nI know now in my heart it’s a habit I have to kick.\nAsking for help were words I never knew;\nBut breaking my pride was a journey I had to go through.\nInto rehab, not knowing what you expect;\nAll I knew was my head was wrecked.\nThree months of inner work began;\nNot knowing I was about to meet my clan.\nAlways misunderstood and put upon;\nFinally, I was accepted and felt like a swan.\nThey would help me look within;\nSo to help me find my own self.\nI had built a world around me, which was selfish to the core;\nThis was news to me as I never looked at me before.\nMy lifetime habits and behaviours lead to my perceptions;\nNow it’s time to change with no more deceptions.\nNo more wallowing in self-pity;\nIt’s time to return to the city.\nWith all the tools from rehab at my disposal;\nIt’s time to integrate into the hostel.\nOne day at a time to even an hour at a time;\nIt’s not easy policing my thoughts day in and day out.\nBut it’s better than being sick of being sick, of that I have no doubt.",
-             audio: "audio/inside Job.m4a" },
-            { image: "images/Maninthemirror.jpg",
-             text: "The Man in the Mirror\n\n\nI’m gonna make a change for once in my life. It’s gonna feel real good it’s gonna make a difference. I’m starting with the man in the mirror, I’m asking him to change his ways. If you want the world to be a better place, a more fulfilling life take a good look at yourself and make that change”.\n\n\nI look at my behaviours and how they deeply affected those around me; in relationships, with work colleagues and generally how I conducted my day-to-day living.\n\n\nI linked alcohol, drugs and gambling to those behaviours. While topping up my addictions give me a form of escape from reality. A reality formed at a young age through self-belief, thoughts of not living up to other peoples or family standards. Looking around me at 10 or 11 years old and comparing myself to others including cousins and friends.\n\n\nA warped way of thinking at such a young age, the formative years and carrying it through to adulthood. A made up persona to conform to the world around me. A world at my core I hated. I built this persona, especially in high school so that I was not disliked or bullied. I was always in a fight or fighting mood. Always on the front foot, battle ready. I done some bad things on the spur of the moment and lived to regret them.\n\n\nThat regret and shame was like a tug of war in my head, the good side always fighting the bad side. In those years my mental health struggled. Alcohol so young was like fuel to the fire. The behaviours were out of control.", 
-             audio: "audio/man mirror.m4a" },
-            { image: "images/Themask.jpg",
-             text: "Remove The Mask Fill The Void\n\n\nBehind every mask the shadow of addiction lurks;\n\nthe smiling mask that we show to the world has sinister underlying issues underneath.\n\nThe confident mask that hides our fear.\n\nThe false personas that hide our pain, our true selves and shame.\n\nRemove the masks one by one to find a real, imperfect self.\n\nThrough honest acceptance and connections.\n\nNo more using masks as a defence mechanism to hide our vulnerability.\n\nRemove the mask and find the original you.",
-             audio: "audio/mask.m4a" },
-            { image: "images/Outwithfriends.jpg",
-             text: "Sick As Your Secret\n\nWe are only as sick as our secrets.\nWhen buried inside of us, our secrets can cause bitter and twisted perceptions.\nI personally didn’t like what I was witnessing around me growing up, so I fabricated a world of make believe.\n\nLoneliness and isolation wasn’t long to follow.\nTrips to psychologists was the normal - my childhood, adolescence and adult lives consisted of this.\n\nMy mind and thoughts were dark and delusional.\nFrequent outbursts and out of character episodes came along. Emotionally disabled, I tried to carry on but relationships faltered and fell away after some years. No one got me, I didn’t feel good enough.\n\nThen began the outside validation. Anyone or group that showed interest I latched onto, especially if drink or drugs were involved.\nDrink would calm my thoughts. I felt in control of me when drunk. Drugs would soothe my feelings. This began my 40 year love affair with alcohol and drugs. In this time my life became unmanageable.\n\nNow looking back, being 17 months clean, I could cringe. Today my perceptions have changed. Change, what a beautiful word. Without change I would be back on that merry-go round of madness, thinking the world was against me.",
-             audio: "audio/sick as your secret.m4a" },
-            { image: "images/Curtains.jpg",
-             text: "Middletown Dreams\n\n\n\nThe family visit closed early\nThe hidden bottle came out\nI turned to close the blinds\nA little slow now, a little start.\n\n\nBut he’s heading down those tracks\nAny time now for sure\nAnother day as drab as today\nIt’s more than a man can endure.\n\n\nDreams flow across the heartland\nFeeding on the fires\nDreams transport desires\nDrive you when you’re down\nDreams transport the ones\nWho need to get out of town",
-             audio: "audio/middletown dreams.m4a" },
-            { image: "images/Mybench.jpg",
-             text: "My Bench\n\n\nYes that’s my bench, its where I lay my head,\nit’s not very comfortable but to me it’s bed.\nIt’s not the prettiest my bench, paint cracked and rusted through,\n sure I’ll not be here long so for now it will do.\n\n\nI lay here some nights staring at the stars,\n counting the months I’ve been here, I used to count just the hours.\nEvery morning the people come and take my bench away,\n they sit there with their coffee while the children go and play.\n\n\nIt’s then I hide out of site so no-one knows my fate,\ncounting down the hours till the ward locks the gate.\nThat’s when I get my bench back, my bed for the night,\nthough most nights I just lie awake yearning for daylight.\n\n\nThere’s nights I do sleep and dream here in the park,\nI dream to no longer be afraid hiding in the dark.\nYes that’s my bench, it’s where I lay my head,\nI’m not asking for much, I just want my own bed.",
-             audio: "audio/my bench.m4a" },
-            { image: "images/Locked.jpg",
-             text: "Addiction — Flip The Mindset\n\n\nDon’t look back with anger, look at the part you played. Don’t look back at the episodes and search for someone to blame. Don’t entertain those childish perceptions as they are only made up. Come away from those playground antics - these outrageous behaviours from adolescence must be left behind.\n\n\nThe world we built in our mind must be dismantled. The walls we built for our own protection must come down. Free our minds of addiction or it’s a lifetime of contradiction. “He did this”, “she did that” has to go. Common ground has to be found or in this world you will surely drown. Learn to forgive oneself or we will end up on the shelf. We must fix steps to let go or past pain will only grow.\n\n\nPity parties must ebb away or one day out you go with nowhere to stay. You have to go within to flow out of your trauma or you’re in for a life of drama. Ask for help to break that pride or you’ll be in for a rough ride. Say cheerio to our ego for not everything has to be known. Trust the process and believe me, it’s great without the stress.",
-             audio: "audio/flip the mindset.m4a" },
-            { image: "images/Keepfit.jpg",
-            text: "Hopeless To A Miracle\n\n\nMy journey out of hell came at a great cost. It was a cost I dreaded, but for my departure this bill was due.\n\nThe comfort of drugs and alcohol - I gave full submission. From there I drowned in debt and horrific addiction.\n\nFrom the weight of the world on my shoulders and crying my last tear, God gave me a listening ear.\n\nTo a homeless drunk, a reason to live - a solution to my problem, I became a marathon man.\n\nFrom having nothing to having my own home, from hating to becoming a loving man, I am certain God’s got a new plan.",
-            audio: "audio/marathon man.m4a" },
-            { image: "images/stormont.jpg",
-             text: "Naked Shame\n\n\n\nThe word homeless lands in rooms like a fist.\n\n“It’s only for a bit.” — a lie worn like a jersey that doesn’t fit.\n\n“His own fault,” they murmur with soft, comfortable cruelty.\n\nAnd I carry that whisper like a stone in my coat.\n\nI dress in clothes that’ve been donated with good intentions. Each seam says: not yours. Each tag says: someone else’s past.\n\nHear me properly: I am ashamed and I am furious.\n\nI am ashamed that I must ask, and furious that I must beg.\n\nIf my head bursts from the pressure, let the pieces spell out the names of the people who walked past, the policies that failed, the hands that closed.\n\nAnger that remembers names of councillors who promised, then vanished.\n\nI am Sean Kane.\n\nSofa-surfed, doorstep-slept, paper-checked, system-f**ked, still standing. \n\nI am tired, but not finished — not by a long shot.",
-             audio: "audio/Sean Kane.m4a" },
-            { image: "images/Hope.jpg",
-             text: "People Of The Best Kind\n\n\n\nGot a call from a hostel, turns out they had a room;\nGood news for this desperate homeless man you would think but for me, I feared more gloom.\n\nI had lost my mom, I lost my home, I damn near lost my mind;\nNow I would be surrounded by Drunks and Junkies, the people of the worst kind.\n\nI got to the room I was given, soon there was a loud knock on my door;\nTurns out the fella across from me had spare food, and asked if I needed more.\n\nSoon I was given and old phone, some tobacco and even an old tv;\nThey invited me for walks and talks and all their kindness and advice of course was all for free.\n\nTurns out the drunks and junkies, and people of the worst kind;\nWere just trying to make it through another day and making sure to help me get through mine.\n\nI sit here now in a wee house that is mine;\nCupboards stacked, heating on and more happiness I couldn’t find.\n\nI can’t help but smile now as I look back to when I nearly lost my mind;\nTo know how lucky I was in my darkest day, to be saved by people of the best kind.",
-             audio: "audio/best people.m4a" }
+                audio: "audio/conversations.m4a"
+            },
+            {
+                image: "images/Roots.jpg",
+                text: "Lend Me Your Ears\n\nMost of my adult life so far has been the best of times and also the worst of times. Living in a bubble, carefree, un-ambitious, uninspired, day-to-day existing, time sapping, a draining path where alcohol came first. I had a cavalier mind about it – putting alcohol before my family relations, mental health, physical health, safety and shelter.\n\nI grew up with addiction in my family, I seen it young but never thought that it would affect my life. Soon I realised that I was repeating the behaviour and becoming even worse.\n\nI didn’t care if I was living in a room or in a bedsit with no windows, as long as I could jam the door locked. It was like I’d rather be nowhere else at times. I thought ‘this is the best I can be today and that is good enough\". Living in the pools you forget about the sea. Drinking became something I just didn’t look forward to anymore - more like something I needed. I became controlled by it and life became unmanageable. My self-care, well-being, functionality, all withered away.\n\nMy drinking went beyond social drinking – drink before, drink during and drink after. I was highly strung, irritable and agitated. What you are not changing, you are choosing and sometimes repeated mistakes become a choice. I thought I could control my drinking. Truth is, I couldn’t. I tried managing it, negotiating with it, outsmarting it but I always lost.\n\nSobriety didn’t truly start for me until I finally realised I had to walk away. Being sober is the choice to stop the behaviour that leads there.\n\nSober isn’t boring;\nSober is remembering every laugh;\nSober is waking up without guilt;\nSober is building the life you were scared to dream about;\nMy changes haven’t always been permanent but the change I want is.",
+                audio: "audio/lend ears.m4a"
+            },
+            {
+                image: "images/Rain.jpg",
+                text: "The Rain\n\nIf in the morning I do not wake it was because of all my pain;\nI hope and wished for brighter days but all I got was the rain.\n\n\nI tried so hard to push through the pain hoping the rain would clear;\npraying for a little bit of sunshine and those brighter days to reappear.\n\n\nAs the days turned to weeks and then into months and the sun still didn’t show, I believed in my heart it was then my time to go.\n\n\nI wanted to stay for longer, to one day make everyone proud; it’s just no matter how hard I try, I can’t outrun this constant dark cloud.\n\n\nI hope one day you can understand it was because of all my pain; my only wish is that I could have been stronger than the rain.",
+                audio: "audio/the rain.m4a"
+            },
+            {
+                image: "images/Time.jpg", 
+                text: "Wednesdays\n\nFriday Wee treat, sweet.\nI’ve earned it… Entitled\nSaturday, feel like shit.\n\nWednesday - no confession.\nFriday… Groundhog Day,\nSaturday, take the edge off.\n\nWednesday… No confession\nBuying bulk, prudence\nFriday, weekend bender.\n\nMonday, take the edge off, functional;\nWednesday, no confession\nBulk again, makes sense\nWatch the pounds, and the pence\nThursday to Sunday foot to the floor.\n\nCan’t work Monday, body sore\nTuesday, take the edge off\nWednesday, I’m beat.\n\nI realised once I used on Wednesdays I had a problem;\nWeekends start earlier, finish later\nNot my fault, become a hater.\n\nWednesday\nMy confession\nHalf truths, denial, blind to progression\nManipulation, control\nTotal obsession.",
+                audio: "audio/wednesdays.m4a"
+            },
+            {
+                image: "images/Frontdoor.jpg",
+                text: "It’s An Inside Job\n\nWe look around and see pain and hurt;\nWe internalise and feel like a piece of dirt.\nWe are only drinking alcohol and doing no harm;\nuntil one day the body sounds the alarm.\nIt’s either jail or hospital or maybe even your last breath;\nThis is real life, not a scene from Macbeth.\nFamily and friends all around us worried and sick;\nI know now in my heart it’s a habit I have to kick.\nAsking for help were words I never knew;\nBut breaking my pride was a journey I had to go through.\nInto rehab, not knowing what you expect;\nAll I knew was my head was wrecked.\nThree months of inner work began;\nNot knowing I was about to meet my clan.\nAlways misunderstood and put upon;\nFinally, I was accepted and felt like a swan.\nThey would help me look within;\nSo to help me find my own self.\nI had built a world around me, which was selfish to the core;\nThis was news to me as I never looked at me before.\nMy lifetime habits and behaviours lead to my perceptions;\nNow it’s time to change with no more deceptions.\nNo more wallowing in self-pity;\nIt’s time to return to the city.\nWith all the tools from rehab at my disposal;\nIt’s time to integrate into the hostel.\nOne day at a time to even an hour at a time;\nIt’s not easy policing my thoughts day in and day out.\nBut it’s better than being sick of being sick, of that I have no doubt.",
+                audio: "audio/inside Job.m4a"
+            },
+            {
+                image: "images/Maninthemirror.jpg",
+                text: "The Man in the Mirror\n\n\nI’m gonna make a change for once in my life. It’s gonna feel real good it’s gonna make a difference. I’m starting with the man in the mirror, I’m asking him to change his ways. If you want the world to be a better place, a more fulfilling life take a good look at yourself and make that change”.\n\n\nI look at my behaviours and how they deeply affected those around me; in relationships, with work colleagues and generally how I conducted my day-to-day living.\n\n\nI linked alcohol, drugs and gambling to those behaviours. While topping up my addictions give me a form of escape from reality. A reality formed at a young age through self-belief, thoughts of not living up to other peoples or family standards. Looking around me at 10 or 11 years old and comparing myself to others including cousins and friends.\n\n\nA warped way of thinking at such a young age, the formative years and carrying it through to adulthood. A made up persona to conform to the world around me. A world at my core I hated. I built this persona, especially in high school so that I was not disliked or bullied. I was always in a fight or fighting mood. Always on the front foot, battle ready. I done some bad things on the spur of the moment and lived to regret them.\n\n\nThat regret and shame was like a tug of war in my head, the good side always fighting the bad side. In those years my mental health struggled. Alcohol so young was like fuel to the fire. The behaviours were out of control.", 
+                audio: "audio/man mirror.m4a"
+            },
+            {
+                image: "images/Themask.jpg",
+                text: "Remove The Mask Fill The Void\n\n\nBehind every mask the shadow of addiction lurks;\n\nthe smiling mask that we show to the world has sinister underlying issues underneath.\n\nThe confident mask that hides our fear.\n\nThe false personas that hide our pain, our true selves and shame.\n\nRemove the masks one by one to find a real, imperfect self.\n\nThrough honest acceptance and connections.\n\nNo more using masks as a defence mechanism to hide our vulnerability.\n\nRemove the mask and find the original you.",
+                audio: "audio/mask.m4a"
+            },
+            {
+                image: "images/Outwithfriends.jpg",
+                text: "Sick As Your Secret\n\nWe are only as sick as our secrets.\nWhen buried inside of us, our secrets can cause bitter and twisted perceptions.\nI personally didn’t like what I was witnessing around me growing up, so I fabricated a world of make believe.\n\nLoneliness and isolation wasn’t long to follow.\nTrips to psychologists was the normal - my childhood, adolescence and adult lives consisted of this.\n\nMy mind and thoughts were dark and delusional.\nFrequent outbursts and out of character episodes came along. Emotionally disabled, I tried to carry on but relationships faltered and fell away after some years. No one got me, I didn’t feel good enough.\n\nThen began the outside validation. Anyone or group that showed interest I latched onto, especially if drink or drugs were involved.\nDrink would calm my thoughts. I felt in control of me when drunk. Drugs would soothe my feelings. This began my 40 year love affair with alcohol and drugs. In this time my life became unmanageable.\n\nNow looking back, being 17 months clean, I could cringe. Today my perceptions have changed. Change, what a beautiful word. Without change I would be back on that merry-go round of madness, thinking the world was against me.",
+                audio: "audio/sick as your secret.m4a"
+            },
+            {
+                image: "images/Curtains.jpg",
+                text: "Middletown Dreams\n\n\n\nThe family visit closed early\nThe hidden bottle came out\nI turned to close the blinds\nA little slow now, a little start.\n\n\nBut he’s heading down those tracks\nAny time now for sure\nAnother day as drab as today\nIt’s more than a man can endure.\n\n\nDreams flow across the heartland\nFeeding on the fires\nDreams transport desires\nDrive you when you’re down\nDreams transport the ones\nWho need to get out of town",
+                audio: "audio/middletown dreams.m4a"
+            },
+            {
+                image: "images/Mybench.jpg",
+                text: "My Bench\n\n\nYes that’s my bench, its where I lay my head,\nit’s not very comfortable but to me it’s bed.\nIt’s not the prettiest my bench, paint cracked and rusted through,\n sure I’ll not be here long so for now it will do.\n\n\nI lay here some nights staring at the stars,\n counting the months I’ve been here, I used to count just the hours.\nEvery morning the people come and take my bench away,\n they sit there with their coffee while the children go and play.\n\n\nIt’s then I hide out of site so no-one knows my fate,\ncounting down the hours till the ward locks the gate.\nThat’s when I get my bench back, my bed for the night,\nthough most nights I just lie awake yearning for daylight.\n\n\nThere’s nights I do sleep and dream here in the park,\nI dream to no longer be afraid hiding in the dark.\nYes that’s my bench, it’s where I lay my head,\nI’m not asking for much, I just want my own bed.",
+                audio: "audio/my bench.m4a"
+            },
+            {
+                image: "images/Locked.jpg",
+                text: "Addiction — Flip The Mindset\n\n\nDon’t look back with anger, look at the part you played. Don’t look back at the episodes and search for someone to blame. Don’t entertain those childish perceptions as they are only made up. Come away from those playground antics - these outrageous behaviours from adolescence must be left behind.\n\n\nThe world we built in our mind must be dismantled. The walls we built for our own protection must come down. Free our minds of addiction or it’s a lifetime of contradiction. “He did this”, “she did that” has to go. Common ground has to be found or in this world you will surely drown. Learn to forgive oneself or we will end up on the shelf. We must fix steps to let go or past pain will only grow.\n\n\nPity parties must ebb away or one day out you go with nowhere to stay. You have to go within to flow out of your trauma or you’re in for a life of drama. Ask for help to break that pride or you’ll be in for a rough ride. Say cheerio to our ego for not everything has to be known. Trust the process and believe me, it’s great without the stress.",
+                audio: "audio/flip the mindset.m4a"
+            },
+            {
+                image: "images/Keepfit.jpg",
+                text: "Hopeless To A Miracle\n\n\nMy journey out of hell came at a great cost. It was a cost I dreaded, but for my departure this bill was due.\n\nThe comfort of drugs and alcohol - I gave full submission. From there I drowned in debt and horrific addiction.\n\nFrom the weight of the world on my shoulders and crying my last tear, God gave me a listening ear.\n\nTo a homeless drunk, a reason to live - a solution to my problem, I became a marathon man.\n\nFrom having nothing to having my own home, from hating to becoming a loving man, I am certain God’s got a new plan.",
+                audio: "audio/marathon man.m4a"
+            },
+            {
+                image: "images/stormont.jpg",
+                text: "Naked Shame\n\n\n\nThe word homeless lands in rooms like a fist.\n\n“It’s only for a bit.” — a lie worn like a jersey that doesn’t fit.\n\n“His own fault,” they murmur with soft, comfortable cruelty.\n\nAnd I carry that whisper like a stone in my coat.\n\nI dress in clothes that’ve been donated with good intentions. Each seam says: not yours. Each tag says: someone else’s past.\n\nHear me properly: I am ashamed and I am furious.\n\nI am ashamed that I must ask, and furious that I must beg.\n\nIf my head bursts from the pressure, let the pieces spell out the names of the people who walked past, the policies that failed, the hands that closed.\n\nAnger that remembers names of councillors who promised, then vanished.\n\nI am Sean Kane.\n\nSofa-surfed, doorstep-slept, paper-checked, system-f**ked, still standing. \n\nI am tired, but not finished — not by a long shot.",
+                audio: "audio/Sean Kane.m4a"
+            },
+            {
+                image: "images/Hope.jpg",
+                text: "People Of The Best Kind\n\n\n\nGot a call from a hostel, turns out they had a room;\nGood news for this desperate homeless man you would think but for me, I feared more gloom.\n\nI had lost my mom, I lost my home, I damn near lost my mind;\nNow I would be surrounded by Drunks and Junkies, the people of the worst kind.\n\nI got to the room I was given, soon there was a loud knock on my door;\nTurns out the fella across from me had spare food, and asked if I needed more.\n\nSoon I was given and old phone, some tobacco and even an old tv;\nThey invited me for walks and talks and all their kindness and advice of course was all for free.\n\nTurns out the drunks and junkies, and people of the worst kind;\nWere just trying to make it through another day and making sure to help me get through mine.\n\nI sit here now in a wee house that is mine;\nCupboards stacked, heating on and more happiness I couldn’t find.\n\nI can’t help but smile now as I look back to when I nearly lost my mind;\nTo know how lucky I was in my darkest day, to be saved by people of the best kind.",
+                audio: "audio/best people.m4a"
+            }
         ];
 
         // ==========================================
         // 2. SCENE SETUP & PLAYER RIG
         // ==========================================
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0d0d11); 
+        scene.background = new THREE.Color(0x16161d); 
 
         const playerRig = new THREE.Group();
         playerRig.position.set(0, 1.2, 4.2); 
@@ -238,7 +276,7 @@
         document.body.appendChild(renderer.domElement);
         document.body.appendChild(VRButton.createButton(renderer));
 
-        const ambientLight = new THREE.AmbientLight(0xfff8ee, 0.95);
+        const ambientLight = new THREE.AmbientLight(0xfff8ee, 1.0);
         scene.add(ambientLight);
 
         const centerLight = new THREE.PointLight(0xffeedd, 1.6, 55);
@@ -253,9 +291,6 @@
         const textureLoader = new THREE.TextureLoader();
         textureLoader.setCrossOrigin('anonymous');
 
-        /**
-         * Helper to load and configure any .jpg texture with tiling repeat & sRGB color
-         */
         function loadTiledJpg(url, repeatX, repeatY, onSuccess, onError) {
             const tex = textureLoader.load(
                 url,
@@ -279,9 +314,9 @@
             return tex;
         }
 
-        // 1. Floor Mesh & JPG Texture
+        // 1. Floor Mesh & JPG Texture (with safe fallback if images/floor.jpg is missing)
         const floorMat = new THREE.MeshStandardMaterial({ 
-            color: 0xffffff,
+            color: 0x3a2d24,
             roughness: 0.75,
             metalness: 0.05
         });
@@ -292,7 +327,7 @@
 
         // 2. Ceiling Mesh & JPG Texture
         const ceilingMat = new THREE.MeshStandardMaterial({ 
-            color: 0xffffff,
+            color: 0x18181f,
             roughness: 0.85,
             metalness: 0.05
         });
@@ -302,20 +337,35 @@
         ceiling.position.y = wallHeight;
         scene.add(ceiling);
 
-        // 3. Outer Gallery Walls
-        const wallTexture = loadTiledJpg(ROOM_TEXTURES.wallJpg, ROOM_TEXTURES.wallRepeat.x, ROOM_TEXTURES.wallRepeat.y);
+        // 3. Outer Gallery Walls (with safe fallback color if images/wall.jpg is missing)
         const wallSideMat = new THREE.MeshStandardMaterial({ 
-            map: wallTexture, 
+            color: 0x2a2931,
             side: THREE.BackSide,
             roughness: 0.88
         });
+        loadTiledJpg(
+            ROOM_TEXTURES.wallJpg,
+            ROOM_TEXTURES.wallRepeat.x,
+            ROOM_TEXTURES.wallRepeat.y,
+            (tex) => {
+                wallSideMat.map = tex;
+                wallSideMat.color.setHex(0xffffff);
+                wallSideMat.needsUpdate = true;
+            },
+            () => {
+                wallSideMat.map = null;
+                wallSideMat.color.setHex(0x2a2931);
+                wallSideMat.needsUpdate = true;
+            }
+        );
+
         const hiddenCapMat = new THREE.MeshBasicMaterial({ visible: false });
         const roomGeo = new THREE.BoxGeometry(roomSize, wallHeight, roomSize);
         const roomMaterials = [
             wallSideMat,  // East wall
             wallSideMat,  // West wall
-            hiddenCapMat, // Top cap disabled (uses dedicated ceiling mesh)
-            hiddenCapMat, // Bottom cap disabled (uses dedicated floor mesh)
+            hiddenCapMat, // Top cap disabled
+            hiddenCapMat, // Bottom cap disabled
             wallSideMat,  // South wall
             wallSideMat   // North wall
         ];
@@ -323,13 +373,22 @@
         roomMesh.position.y = wallHeight / 2;
         scene.add(roomMesh);
 
-        // Public functions to change Floor or Ceiling JPG at any time
         function setFloorTextureJpg(jpgUrl, repeatX = ROOM_TEXTURES.floorRepeat.x, repeatY = ROOM_TEXTURES.floorRepeat.y) {
-            loadTiledJpg(jpgUrl, repeatX, repeatY, (tex) => {
-                floorMat.map = tex;
-                floorMat.color.setHex(0xffffff);
-                floorMat.needsUpdate = true;
-            });
+            loadTiledJpg(
+                jpgUrl,
+                repeatX,
+                repeatY,
+                (tex) => {
+                    floorMat.map = tex;
+                    floorMat.color.setHex(0xffffff);
+                    floorMat.needsUpdate = true;
+                },
+                () => {
+                    floorMat.map = null;
+                    floorMat.color.setHex(0x3a2d24);
+                    floorMat.needsUpdate = true;
+                }
+            );
         }
 
         function setCeilingTextureJpg(jpgUrl, repeatX = ROOM_TEXTURES.ceilingRepeat.x, repeatY = ROOM_TEXTURES.ceilingRepeat.y) {
@@ -350,7 +409,6 @@
             );
         }
 
-        // Load initial Floor and Ceiling JPGs from ROOM_TEXTURES config
         setFloorTextureJpg(ROOM_TEXTURES.floorJpg, ROOM_TEXTURES.floorRepeat.x, ROOM_TEXTURES.floorRepeat.y);
         setCeilingTextureJpg(ROOM_TEXTURES.ceilingJpg, ROOM_TEXTURES.ceilingRepeat.x, ROOM_TEXTURES.ceilingRepeat.y);
 
@@ -475,10 +533,20 @@
                 frameGroup.add(cornerMesh);
             });
 
-            const artTex = textureLoader.load(imageUrl);
-            artTex.colorSpace = THREE.SRGBColorSpace;
             const artGeo = new THREE.PlaneGeometry(artWidth, artHeight);
-            const artMat = new THREE.MeshBasicMaterial({ map: artTex });
+            const artMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            textureLoader.load(
+                imageUrl,
+                (tex) => {
+                    tex.colorSpace = THREE.SRGBColorSpace;
+                    artMat.map = tex;
+                    artMat.needsUpdate = true;
+                },
+                undefined,
+                () => {
+                    artMat.color.setHex(0x3a3a45);
+                }
+            );
             const artMesh = new THREE.Mesh(artGeo, artMat);
             artMesh.position.z = 0.052;
             frameGroup.add(artMesh);
@@ -648,4 +716,656 @@
 
         function create3DAudioButtonTexture(isPlaying) {
             const canvas = document.createElement('canvas');
-            canvas.width = 5
+            canvas.width = 512;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            if (isPlaying) {
+                grad.addColorStop(0, '#d4af37');
+                grad.addColorStop(1, '#f5d78e');
+            } else {
+                grad.addColorStop(0, '#1f1e24');
+                grad.addColorStop(1, '#2b2933');
+            }
+
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 56);
+            ctx.fill();
+
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = isPlaying ? '#ffffff' : '#d4af37';
+            ctx.stroke();
+
+            ctx.fillStyle = isPlaying ? '#151519' : '#d4af37';
+            ctx.beginPath();
+            ctx.arc(68, 64, 36, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = isPlaying ? '#f5d78e' : '#151519';
+            if (isPlaying) {
+                ctx.fillRect(55, 48, 9, 32);
+                ctx.fillRect(72, 48, 9, 32);
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(59, 46);
+                ctx.lineTo(85, 64);
+                ctx.lineTo(59, 82);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            ctx.font = 'bold 28px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = isPlaying ? '#151519' : '#f5d78e';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(isPlaying ? 'PLAYING STORY...' : 'LISTEN TO STORY', 124, 65);
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.colorSpace = THREE.SRGBColorSpace;
+            return tex;
+        }
+
+        const btnTexIdle = create3DAudioButtonTexture(false);
+        const btnTexPlaying = create3DAudioButtonTexture(true);
+
+        // ==========================================
+        // 5. PLACE ARTWORKS, PLAQUES & 3D AUDIO BUTTONS
+        // ==========================================
+        const exhibitStations = [];
+        const interactiveButtons = [];
+
+        const wallDistribution = [
+            { count: 4, wall: 'north' },
+            { count: 3, wall: 'east'  },
+            { count: 4, wall: 'south' },
+            { count: 3, wall: 'west'  }
+        ];
+
+        let itemIndex = 0;
+        const wallOffset = (roomSize / 2) - 0.15;
+
+        wallDistribution.forEach(({ count, wall }) => {
+            for (let i = 0; i < count; i++) {
+                if (itemIndex >= galleryItems.length) break;
+                const item = galleryItems[itemIndex];
+
+                const stationGroup = new THREE.Group();
+                const spread = roomSize - 8;
+                const offsetAlongWall = -spread / 2 + (i + 0.5) * (spread / count);
+
+                if (wall === 'north') {
+                    stationGroup.position.set(offsetAlongWall, 3.3, -wallOffset);
+                    stationGroup.rotation.y = 0;
+                } else if (wall === 'east') {
+                    stationGroup.position.set(wallOffset, 3.3, offsetAlongWall);
+                    stationGroup.rotation.y = -Math.PI / 2;
+                } else if (wall === 'south') {
+                    stationGroup.position.set(-offsetAlongWall, 3.3, wallOffset);
+                    stationGroup.rotation.y = Math.PI;
+                } else if (wall === 'west') {
+                    stationGroup.position.set(-wallOffset, 3.3, -offsetAlongWall);
+                    stationGroup.rotation.y = Math.PI / 2;
+                }
+
+                const ornateFrame = createOrnateArtworkFrame(item.image);
+                ornateFrame.position.set(-1.85, 0, 0);
+                stationGroup.add(ornateFrame);
+
+                const plaqueGroup = new THREE.Group();
+                plaqueGroup.position.set(1.75, 0.18, 0);
+
+                const plaqueBackingGeo = new THREE.BoxGeometry(2.68, 3.48, 0.06);
+                const plaqueBacking = new THREE.Mesh(plaqueBackingGeo, brushedGoldMat);
+                plaqueBacking.position.z = 0.02;
+                plaqueGroup.add(plaqueBacking);
+
+                const textTex = createTextTexture(item.text);
+                const plaqueGeo = new THREE.PlaneGeometry(2.58, 3.38);
+                const plaqueMat = new THREE.MeshBasicMaterial({ map: textTex });
+                const plaqueMesh = new THREE.Mesh(plaqueGeo, plaqueMat);
+                plaqueMesh.position.z = 0.055;
+                plaqueGroup.add(plaqueMesh);
+                stationGroup.add(plaqueGroup);
+
+                const btnGroup = new THREE.Group();
+                btnGroup.position.set(1.75, -1.86, 0.06);
+
+                const btnBackingGeo = new THREE.BoxGeometry(1.66, 0.44, 0.05);
+                const btnBacking = new THREE.Mesh(btnBackingGeo, brushedGoldMat);
+                btnGroup.add(btnBacking);
+
+                const btnFaceGeo = new THREE.PlaneGeometry(1.6, 0.4);
+                const btnFaceMat = new THREE.MeshBasicMaterial({ map: btnTexIdle, transparent: true });
+                const btnFaceMesh = new THREE.Mesh(btnFaceGeo, btnFaceMat);
+                btnFaceMesh.position.z = 0.03;
+                btnGroup.add(btnFaceMesh);
+
+                stationGroup.add(btnGroup);
+                scene.add(stationGroup);
+
+                const narrationAudio = new Audio(item.audio);
+                narrationAudio.preload = 'auto';
+
+                const stationData = {
+                    group: stationGroup,
+                    audio: narrationAudio,
+                    title: item.text.split('\n')[0],
+                    btnMesh: btnFaceMesh,
+                    btnGroup: btnGroup,
+                    manuallyPaused: false
+                };
+
+                btnFaceMesh.userData.station = stationData;
+                interactiveButtons.push(btnFaceMesh);
+                exhibitStations.push(stationData);
+
+                itemIndex++;
+            }
+        });
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                exhibitStations.forEach((st, idx) => {
+                    const plaqueMesh = st.group.children[1].children[1];
+                    plaqueMesh.material.map = createTextTexture(galleryItems[idx].text);
+                    plaqueMesh.material.needsUpdate = true;
+                });
+            });
+        }
+
+        // ==========================================
+        // 5B. GALLERY BENCHES, DECORATIVE PLANTS & CENTER SCULPTURE
+        // ==========================================
+        const colliders = [];
+
+        const leatherMat = new THREE.MeshStandardMaterial({
+            color: 0x261c18,
+            roughness: 0.42,
+            metalness: 0.08
+        });
+
+        const darkPlanterMat = new THREE.MeshStandardMaterial({
+            color: 0x1b1c20,
+            roughness: 0.5,
+            metalness: 0.2
+        });
+
+        const soilMat = new THREE.MeshStandardMaterial({
+            color: 0x2b1d14,
+            roughness: 0.95
+        });
+
+        const leafMat = new THREE.MeshStandardMaterial({
+            color: 0x2e6f40,
+            roughness: 0.45,
+            metalness: 0.05,
+            side: THREE.DoubleSide
+        });
+
+        const leafLightMat = new THREE.MeshStandardMaterial({
+            color: 0x488e56,
+            roughness: 0.4,
+            metalness: 0.05,
+            side: THREE.DoubleSide
+        });
+
+        function createGalleryBench() {
+            const bench = new THREE.Group();
+            const length = 3.6;
+            const depth = 1.25;
+
+            const baseGeo = new THREE.BoxGeometry(length, 0.12, depth);
+            const baseMesh = new THREE.Mesh(baseGeo, darkWalnutMat);
+            baseMesh.position.y = 0.42;
+            bench.add(baseMesh);
+
+            const trimGeo = new THREE.BoxGeometry(length + 0.02, 0.03, depth + 0.02);
+            const trimMesh = new THREE.Mesh(trimGeo, brushedGoldMat);
+            trimMesh.position.y = 0.35;
+            bench.add(trimMesh);
+
+            const cushionGeo = new THREE.BoxGeometry(length - 0.06, 0.18, depth - 0.06);
+            const cushionMesh = new THREE.Mesh(cushionGeo, leatherMat);
+            cushionMesh.position.y = 0.57;
+            bench.add(cushionMesh);
+
+            const seamGeo = new THREE.BoxGeometry(0.02, 0.19, depth - 0.04);
+            const seamMat = new THREE.MeshStandardMaterial({ color: 0x140e0b, roughness: 0.8 });
+            const buttonGeo = new THREE.SphereGeometry(0.025, 10, 10);
+
+            for (let i = -2; i <= 2; i++) {
+                const xPos = i * 0.62;
+                const seam = new THREE.Mesh(seamGeo, seamMat);
+                seam.position.set(xPos, 0.57, 0);
+                bench.add(seam);
+
+                [-0.28, 0.28].forEach((zPos) => {
+                    const btn = new THREE.Mesh(buttonGeo, brushedGoldMat);
+                    btn.position.set(xPos, 0.66, zPos);
+                    bench.add(btn);
+                });
+            }
+
+            const bolsterGeo = new THREE.CylinderGeometry(0.14, 0.14, length - 0.5, 20);
+            const bolster = new THREE.Mesh(bolsterGeo, leatherMat);
+            bolster.rotation.z = Math.PI / 2;
+            bolster.position.y = 0.88;
+            bench.add(bolster);
+
+            [-1.1, 0, 1.1].forEach((postX) => {
+                const postGeo = new THREE.CylinderGeometry(0.028, 0.028, 0.26, 12);
+                const post = new THREE.Mesh(postGeo, brushedGoldMat);
+                post.position.set(postX, 0.72, 0);
+                bench.add(post);
+            });
+
+            const legGeo = new THREE.CylinderGeometry(0.055, 0.035, 0.36, 14);
+            const footGeo = new THREE.CylinderGeometry(0.042, 0.045, 0.06, 14);
+            const legX = (length / 2) - 0.28;
+            const legZ = (depth / 2) - 0.22;
+
+            [
+                [-legX, -legZ],
+                [legX, -legZ],
+                [-legX, legZ],
+                [legX, legZ]
+            ].forEach(([lx, lz]) => {
+                const leg = new THREE.Mesh(legGeo, darkWalnutMat);
+                leg.position.set(lx, 0.18, lz);
+                bench.add(leg);
+
+                const foot = new THREE.Mesh(footGeo, brushedGoldMat);
+                foot.position.set(lx, 0.03, lz);
+                bench.add(foot);
+            });
+
+            return bench;
+        }
+
+        function createDecorativePlant(scaleMultiplier = 1.0) {
+            const plantGroup = new THREE.Group();
+
+            const potGeo = new THREE.CylinderGeometry(0.56, 0.38, 0.92, 24);
+            const potMesh = new THREE.Mesh(potGeo, darkPlanterMat);
+            potMesh.position.y = 0.46;
+            plantGroup.add(potMesh);
+
+            const rimGeo = new THREE.TorusGeometry(0.56, 0.032, 12, 32);
+            const rimMesh = new THREE.Mesh(rimGeo, brushedGoldMat);
+            rimMesh.rotation.x = Math.PI / 2;
+            rimMesh.position.y = 0.92;
+            plantGroup.add(rimMesh);
+
+            const soilGeo = new THREE.CylinderGeometry(0.53, 0.53, 0.04, 20);
+            const soilMesh = new THREE.Mesh(soilGeo, soilMat);
+            soilMesh.position.y = 0.89;
+            plantGroup.add(soilMesh);
+
+            for (let s = 0; s < 3; s++) {
+                const stemH = 0.85 + s * 0.22;
+                const stemGeo = new THREE.CylinderGeometry(0.03, 0.05, stemH, 10);
+                const stem = new THREE.Mesh(stemGeo, darkWalnutMat);
+                stem.position.set((s - 1) * 0.08, 0.9 + stemH / 2, (s % 2 === 0 ? 0.05 : -0.05));
+                stem.rotation.z = (s - 1) * 0.08;
+                plantGroup.add(stem);
+            }
+
+            const tiers = [
+                { count: 7, height: 1.15, tilt: 0.82, len: 1.05, width: 0.34, mat: leafMat },
+                { count: 6, height: 1.45, tilt: 0.55, len: 0.95, width: 0.30, mat: leafLightMat },
+                { count: 5, height: 1.72, tilt: 0.28, len: 0.78, width: 0.25, mat: leafLightMat }
+            ];
+
+            tiers.forEach((tier, tIdx) => {
+                for (let i = 0; i < tier.count; i++) {
+                    const angle = (i / tier.count) * Math.PI * 2 + (tIdx * 0.4);
+                    const frondPivot = new THREE.Group();
+                    frondPivot.position.set(0, tier.height, 0);
+                    frondPivot.rotation.y = angle;
+                    frondPivot.rotation.x = tier.tilt;
+
+                    const segLen = tier.len / 3;
+                    let segParent = frondPivot;
+
+                    for (let seg = 0; seg < 3; seg++) {
+                        const segWidth = tier.width * (1 - seg * 0.25);
+                        const bladeGeo = new THREE.PlaneGeometry(segWidth, segLen);
+                        bladeGeo.translate(0, segLen / 2, 0);
+
+                        const bladeMesh = new THREE.Mesh(bladeGeo, tier.mat);
+                        if (seg > 0) {
+                            bladeMesh.position.y = segLen;
+                            bladeMesh.rotation.x = 0.26;
+                        }
+                        segParent.add(bladeMesh);
+                        segParent = bladeMesh;
+                    }
+
+                    plantGroup.add(frondPivot);
+                }
+            });
+
+            plantGroup.scale.setScalar(scaleMultiplier);
+            return plantGroup;
+        }
+
+        const benchLocations = [
+            { x: 0, z: -7.5, rotY: 0 },
+            { x: 0, z: 7.5,  rotY: Math.PI },
+            { x: 7.5, z: 0,  rotY: -Math.PI / 2 },
+            { x: -7.5, z: 0, rotY: Math.PI / 2 }
+        ];
+
+        benchLocations.forEach(({ x, z, rotY }) => {
+            const bench = createGalleryBench();
+            bench.position.set(x, 0, z);
+            bench.rotation.y = rotY;
+            scene.add(bench);
+            colliders.push({ x, z, radius: 1.9 });
+        });
+
+        const plantLocations = [
+            { x: -6.5, z: -6.5, scale: 1.1 },
+            { x: 6.5,  z: -6.5, scale: 1.1 },
+            { x: -6.5, z: 6.5,  scale: 1.1 },
+            { x: 6.5,  z: 6.5,  scale: 1.1 },
+            { x: -16.5, z: -16.5, scale: 1.35 },
+            { x: 16.5,  z: -16.5, scale: 1.35 },
+            { x: -16.5, z: 16.5,  scale: 1.35 },
+            { x: 16.5,  z: 16.5,  scale: 1.35 }
+        ];
+
+        plantLocations.forEach(({ x, z, scale }, idx) => {
+            const plant = createDecorativePlant(scale);
+            plant.position.set(x, 0, z);
+            plant.rotation.y = idx * 1.1;
+            scene.add(plant);
+            colliders.push({ x, z, radius: 0.85 * scale });
+        });
+
+        const centerFeature = new THREE.Group();
+        const plinthGeo = new THREE.CylinderGeometry(1.15, 1.3, 1.15, 8);
+        const plinthMesh = new THREE.Mesh(plinthGeo, darkPlanterMat);
+        plinthMesh.position.y = 0.575;
+        centerFeature.add(plinthMesh);
+
+        const plinthCapGeo = new THREE.CylinderGeometry(1.22, 1.22, 0.08, 8);
+        const plinthCap = new THREE.Mesh(plinthCapGeo, brushedGoldMat);
+        plinthCap.position.y = 1.18;
+        centerFeature.add(plinthCap);
+
+        const sculptureGroup = new THREE.Group();
+        sculptureGroup.position.y = 2.25;
+
+        const ring1Geo = new THREE.TorusGeometry(0.68, 0.09, 20, 64);
+        const ring1 = new THREE.Mesh(ring1Geo, brushedGoldMat);
+        sculptureGroup.add(ring1);
+
+        const ring2Geo = new THREE.TorusGeometry(0.46, 0.07, 20, 64);
+        const ring2 = new THREE.Mesh(ring2Geo, brushedGoldMat);
+        ring2.rotation.y = Math.PI / 2;
+        ring2.rotation.x = Math.PI / 4;
+        sculptureGroup.add(ring2);
+
+        const coreGeo = new THREE.OctahedronGeometry(0.22, 0);
+        const coreMesh = new THREE.Mesh(coreGeo, creamMatboardMat);
+        sculptureGroup.add(coreMesh);
+
+        centerFeature.add(sculptureGroup);
+        scene.add(centerFeature);
+        colliders.push({ x: 0, z: 0, radius: 1.55 });
+
+        // ==========================================
+        // 6. AUDIO CONTROLLER (3D BUTTONS & PROXIMITY)
+        // ==========================================
+        const bgMusic = new Audio('audio/background.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.25;
+        let bgmEnabled = true;
+
+        let audioUnlocked = false;
+        let activeStation = null;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            audioUnlocked = true;
+            if (bgmEnabled) {
+                bgMusic.play().catch(() => {});
+            }
+        }
+
+        function syncAudioUI() {
+            exhibitStations.forEach((st) => {
+                const isThisPlaying = (st === activeStation && !st.audio.paused);
+                st.btnMesh.material.map = isThisPlaying ? btnTexPlaying : btnTexIdle;
+                st.btnMesh.material.needsUpdate = true;
+            });
+
+            if (!activeStation) {
+                if (bgmEnabled) bgMusic.volume = 0.25;
+                return;
+            }
+
+            const isPlaying = !activeStation.audio.paused;
+            if (bgmEnabled) {
+                bgMusic.volume = isPlaying ? 0.06 : 0.20;
+            }
+        }
+
+        function toggleStationAudio(station) {
+            unlockAudio();
+            if (!station) return;
+
+            if (activeStation && activeStation !== station) {
+                activeStation.audio.pause();
+                activeStation.audio.currentTime = 0;
+                activeStation.manuallyPaused = false;
+            }
+
+            activeStation = station;
+
+            if (station.audio.paused) {
+                station.manuallyPaused = false;
+                station.audio.play().then(syncAudioUI).catch((err) => {
+                    console.warn("Audio playback issue:", err);
+                });
+            } else {
+                station.manuallyPaused = true;
+                station.audio.pause();
+                syncAudioUI();
+            }
+        }
+
+        exhibitStations.forEach((st) => {
+            st.audio.addEventListener('ended', () => {
+                st.manuallyPaused = true;
+                syncAudioUI();
+            });
+            st.audio.addEventListener('play', syncAudioUI);
+            st.audio.addEventListener('pause', syncAudioUI);
+        });
+
+        function updateProximityAudio() {
+            if (!audioUnlocked) return;
+
+            const playerPos = new THREE.Vector3();
+            camera.getWorldPosition(playerPos);
+
+            let closestStation = null;
+            let minDistance = Infinity;
+            const triggerDistance = 5.0;
+
+            for (const station of exhibitStations) {
+                const dist = playerPos.distanceTo(station.group.position);
+                if (dist < triggerDistance && dist < minDistance) {
+                    minDistance = dist;
+                    closestStation = station;
+                }
+            }
+
+            if (closestStation !== activeStation) {
+                if (activeStation) {
+                    activeStation.audio.pause();
+                    activeStation.audio.currentTime = 0;
+                    activeStation.manuallyPaused = false;
+                }
+
+                activeStation = closestStation;
+
+                if (activeStation && !activeStation.manuallyPaused) {
+                    activeStation.audio.play().catch(() => {});
+                }
+                syncAudioUI();
+            }
+        }
+
+        // ==========================================
+        // 7. CONTROLS & 3D RAYCASTER FOR PLAQUE BUTTONS
+        // ==========================================
+        const moveState = { forward: false, backward: false, left: false, right: false };
+        const raycaster = new THREE.Raycaster();
+        const pointerNDC = new THREE.Vector2();
+
+        window.addEventListener('keydown', (e) => {
+            unlockAudio();
+            if (e.code === 'KeyW' || e.code === 'ArrowUp') moveState.forward = true;
+            if (e.code === 'KeyS' || e.code === 'ArrowDown') moveState.backward = true;
+            if (e.code === 'KeyA' || e.code === 'ArrowLeft') moveState.left = true;
+            if (e.code === 'KeyD' || e.code === 'ArrowRight') moveState.right = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'KeyW' || e.code === 'ArrowUp') moveState.forward = false;
+            if (e.code === 'KeyS' || e.code === 'ArrowDown') moveState.backward = false;
+            if (e.code === 'KeyA' || e.code === 'ArrowLeft') moveState.left = false;
+            if (e.code === 'KeyD' || e.code === 'ArrowRight') moveState.right = false;
+        });
+
+        function bindDpadButton(id, dirKey) {
+            const btn = document.getElementById(id);
+            const start = (e) => { e.preventDefault(); unlockAudio(); moveState[dirKey] = true; };
+            const end = (e) => { e.preventDefault(); moveState[dirKey] = false; };
+
+            btn.addEventListener('pointerdown', start);
+            btn.addEventListener('pointerup', end);
+            btn.addEventListener('pointerleave', end);
+            btn.addEventListener('pointercancel', end);
+        }
+
+        bindDpadButton('btn-up', 'forward');
+        bindDpadButton('btn-down', 'backward');
+        bindDpadButton('btn-left', 'left');
+        bindDpadButton('btn-right', 'right');
+
+        let isDragging = false;
+        let dragDistance = 0;
+        let prevPointer = { x: 0, y: 0 };
+
+        renderer.domElement.addEventListener('pointerdown', (e) => {
+            unlockAudio();
+            isDragging = true;
+            dragDistance = 0;
+            prevPointer.x = e.clientX;
+            prevPointer.y = e.clientY;
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isDragging) {
+                pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+                pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(pointerNDC, camera);
+                const hits = raycaster.intersectObjects(interactiveButtons);
+                renderer.domElement.style.cursor = (hits.length > 0 && hits[0].distance < 12) ? 'pointer' : 'grab';
+                return;
+            }
+
+            if (renderer.xr.isPresenting) return;
+            const dx = e.clientX - prevPointer.x;
+            const dy = e.clientY - prevPointer.y;
+            dragDistance += Math.hypot(dx, dy);
+            prevPointer.x = e.clientX;
+            prevPointer.y = e.clientY;
+
+            playerRig.rotation.y -= dx * 0.004;
+            camera.rotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, camera.rotation.x - dy * 0.004));
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            if (isDragging && dragDistance < 8 && e.target === renderer.domElement) {
+                pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+                pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(pointerNDC, camera);
+                const hits = raycaster.intersectObjects(interactiveButtons);
+                if (hits.length > 0 && hits[0].distance < 12) {
+                    const clickedStation = hits[0].object.userData.station;
+                    toggleStationAudio(clickedStation);
+                }
+            }
+            isDragging = false;
+        });
+
+        // ==========================================
+        // 8. ANIMATION LOOP, COLLISIONS & RESIZE
+        // ==========================================
+        const clock = new THREE.Clock();
+        const moveSpeed = 5.0;
+        const turnSpeed = 1.6;
+        const boundaryLimit = (roomSize / 2) - 1.6;
+
+        renderer.setAnimationLoop(() => {
+            const delta = clock.getDelta();
+            const elapsed = clock.getElapsedTime();
+
+            sculptureGroup.rotation.y = elapsed * 0.35;
+            sculptureGroup.position.y = 2.25 + Math.sin(elapsed * 1.5) * 0.06;
+
+            if (moveState.left) playerRig.rotation.y += turnSpeed * delta;
+            if (moveState.right) playerRig.rotation.y -= turnSpeed * delta;
+
+            if (moveState.forward || moveState.backward) {
+                const dir = new THREE.Vector3();
+                camera.getWorldDirection(dir);
+                dir.y = 0;
+                dir.normalize();
+
+                const sign = moveState.forward ? 1 : -1;
+                playerRig.position.addScaledVector(dir, sign * moveSpeed * delta);
+
+                playerRig.position.x = Math.max(-boundaryLimit, Math.min(boundaryLimit, playerRig.position.x));
+                playerRig.position.z = Math.max(-boundaryLimit, Math.min(boundaryLimit, playerRig.position.z));
+
+                for (const col of colliders) {
+                    const dx = playerRig.position.x - col.x;
+                    const dz = playerRig.position.z - col.z;
+                    const dist = Math.hypot(dx, dz);
+                    if (dist < col.radius && dist > 0.001) {
+                        const overlap = col.radius - dist;
+                        playerRig.position.x += (dx / dist) * overlap;
+                        playerRig.position.z += (dz / dist) * overlap;
+                    }
+                }
+            }
+
+            exhibitStations.forEach((st) => {
+                if (st === activeStation && !st.audio.paused) {
+                    const pulse = 1 + Math.sin(elapsed * 5) * 0.035;
+                    st.btnGroup.scale.set(pulse, pulse, 1);
+                } else {
+                    st.btnGroup.scale.set(1, 1, 1);
+                }
+            });
+
+            updateProximityAudio();
+            renderer.render(scene, camera);
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
