@@ -773,8 +773,8 @@
         // ==========================================
         // Aspect Ratio Math: 3000 / 884 = 3.3936
         // If we set the width in the 3D world to 24 units, the height must be 24 / 3.3936 = ~7.07
-        const bannerWidth = 21;
-        const bannerHeight = 6.19;
+        const bannerWidth = 20;
+        const bannerHeight = 5.89;
 
         const bannerGeo = new THREE.PlaneGeometry(bannerWidth, bannerHeight);
         const bannerMat = new THREE.MeshBasicMaterial({ 
@@ -788,7 +788,7 @@ const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
 // x = 0 (centered)
 // y = 8.5 (high up, near the ceiling, above the easels which sit at y=2.5)
 // z = -19.9 (just a fraction in front of the actual back wall at -20 to prevent Z-fighting flickering)
-bannerMesh.position.set(0, 8.5, -19.9);
+bannerMesh.position.set(0, 8.2, -19.9);
 
 scene.add(bannerMesh);
         // ==========================================
