@@ -7,7 +7,7 @@
     <!-- Google Fonts for Museum Plaques & UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Courier+Prime:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #d4af37;
@@ -57,233 +57,6 @@
         .ui-hint {
             color: rgba(255, 255, 255, 0.7);
             font-size: 12px;
-        }
-
-        /* Sleek Floating Audio Controller Card */
-        #audio-hud {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 335px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--gold-Soft);
-            border-radius: 16px;
-            padding: 14px 16px;
-            color: #fff;
-            z-index: 15;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
-        }
-        #audio-hud.playing {
-            border-color: var(--gold);
-            box-shadow: 0 12px 36px rgba(212, 175, 55, 0.18);
-        }
-        .hud-top-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Primary Play/Pause Circle Button */
-        .play-toggle-btn {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            background: linear-gradient(135deg, #d4af37 0%, #9a7b1c 100%);
-            color: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
-            transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.2s;
-        }
-        .play-toggle-btn:hover:not(:disabled) {
-            transform: scale(1.06);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.55);
-        }
-        .play-toggle-btn:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-        .play-toggle-btn:disabled {
-            background: rgba(255, 255, 255, 0.12);
-            color: rgba(255, 255, 255, 0.35);
-            box-shadow: none;
-            cursor: default;
-        }
-        .play-toggle-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        .track-meta {
-            flex: 1;
-            min-width: 0;
-        }
-        .track-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--gold);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .track-title {
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 2px;
-            color: #fff;
-        }
-
-        /* Animated Equalizer Bars */
-        .eq-bars {
-            display: inline-flex;
-            align-items: flex-end;
-            gap: 2px;
-            height: 10px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        #audio-hud.playing .eq-bars {
-            opacity: 1;
-        }
-        .eq-bar {
-            width: 2.5px;
-            background: var(--gold);
-            border-radius: 2px;
-            animation: eqBounce 0.8s infinite ease-in-out alternate;
-        }
-        .eq-bar:nth-child(1) { height: 4px; animation-delay: 0s; }
-        .eq-bar:nth-child(2) { height: 9px; animation-delay: 0.2s; }
-        .eq-bar:nth-child(3) { height: 6px; animation-delay: 0.4s; }
-        .eq-bar:nth-child(4) { height: 10px; animation-delay: 0.1s; }
-        @keyframes eqBounce {
-            0% { height: 3px; }
-            100% { height: 10px; }
-        }
-
-        /* Secondary Utility Icon Buttons */
-        .icon-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.06);
-            color: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: background 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            border-color: var(--gold-Soft);
-        }
-        .icon-btn.active {
-            color: var(--gold);
-            border-color: var(--gold-Soft);
-        }
-        .icon-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* Progress Scrubber Bar */
-        .progress-row {
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .time-stamp {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
-            font-variant-numeric: tabular-nums;
-            min-width: 32px;
-        }
-        .progress-track {
-            flex: 1;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.14);
-            border-radius: 99px;
-            overflow: hidden;
-            cursor: pointer;
-            position: relative;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #d4af37, #f5d78e);
-            border-radius: 99px;
-            transition: width 0.1s linear;
-        }
-
-        /* Collapsible Floor & Ceiling JPG Texture Customizer Panel */
-        #texture-panel {
-            display: none;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.12);
-            font-size: 12px;
-        }
-        #texture-panel.open {
-            display: block;
-        }
-        .tex-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .tex-row:last-child {
-            margin-bottom: 0;
-        }
-        .tex-label {
-            color: #e0e0e0;
-            font-weight: 500;
-            min-width: 58px;
-        }
-        .tex-upload-btn {
-            background: rgba(212, 175, 55, 0.16);
-            border: 1px solid var(--gold-Soft);
-            color: #f5d78e;
-            padding: 5px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            transition: background 0.15s, border-color 0.15s;
-            white-space: nowrap;
-        }
-        .tex-upload-btn:hover {
-            background: rgba(212, 175, 55, 0.3);
-            border-color: var(--gold);
-        }
-        .tex-repeat-input {
-            width: 75px;
-            accent-color: var(--gold);
-            cursor: pointer;
-        }
-        .tex-repeat-val {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
-            min-width: 28px;
-            text-align: right;
         }
 
         /* Upgraded Frosted-Glass D-Pad Controls */
@@ -337,18 +110,6 @@
             background: rgba(212, 175, 55, 0.4);
         }
 
-        @media (max-width: 680px) {
-            #audio-hud {
-                top: auto;
-                bottom: 160px;
-                left: 50%;
-                right: auto;
-                transform: translateX(-50%);
-                width: calc(100vw - 36px);
-                max-width: 345px;
-            }
-        }
-
         /* Moves the Three.js VR button to the bottom right */
         #VRButton {
             left: auto !important;
@@ -365,78 +126,6 @@
             • <strong>Walk:</strong> WASD, Arrows, or D-Pad<br>
             • <strong>Look:</strong> Click & Drag<br>
             • <strong>Audio:</strong> Approach any frame or click the <strong>3D Listen Button</strong> below a plaque
-        </div>
-    </div>
-
-    <!-- Sleek Audio Player HUD + Texture Customizer -->
-    <div id="audio-hud">
-        <div class="hud-top-row">
-            <button id="btn-play-toggle" class="play-toggle-btn" title="Play / Pause Story" disabled>
-                <svg id="icon-play" viewBox="0 0 24 24">
-                    <path d="M8 5.14v14l11-7-11-7z"/>
-                </svg>
-                <svg id="icon-pause" viewBox="0 0 24 24" style="display:none;">
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                </svg>
-            </button>
-
-            <div class="track-meta">
-                <div class="track-label">
-                    <span>Audio Guide</span>
-                    <span class="eq-bars">
-                        <span class="eq-bar"></span>
-                        <span class="eq-bar"></span>
-                        <span class="eq-bar"></span>
-                        <span class="eq-bar"></span>
-                    </span>
-                </div>
-                <div id="hud-track-title" class="track-title">Walk near an artwork...</div>
-            </div>
-
-            <button id="btn-restart" class="icon-btn" title="Restart Story">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-                </svg>
-            </button>
-
-            <button id="btn-bgm" class="icon-btn active" title="Toggle Ambient Music">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                </svg>
-            </button>
-
-            <!-- Toggle Floor/Ceiling Texture Picker Panel -->
-            <button id="btn-tex-panel" class="icon-btn" title="Change Floor & Ceiling JPG Textures">
-                <svg viewBox="0 0 24 24">
-                    <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
-                </svg>
-            </button>
-        </div>
-
-        <div class="progress-row">
-            <span id="time-current" class="time-stamp">0:00</span>
-            <div id="progress-track" class="progress-track" title="Seek Audio">
-                <div id="progress-fill" class="progress-fill"></div>
-            </div>
-            <span id="time-total" class="time-stamp">0:00</span>
-        </div>
-
-        <!-- Live Floor & Ceiling JPG Texture Loader Drawer -->
-        <div id="texture-panel">
-            <div class="tex-row">
-                <span class="tex-label">Floor</span>
-                <label class="tex-upload-btn" for="input-floor-jpg">Choose .JPG</label>
-                <input type="file" id="input-floor-jpg" accept=".jpg,.jpeg,image/jpeg,image/png" style="display:none;">
-                <input type="range" id="slider-floor-repeat" class="tex-repeat-input" min="1" max="24" value="10" title="Floor Tile Repeat">
-                <span id="val-floor-repeat" class="tex-repeat-val">10x</span>
-            </div>
-            <div class="tex-row">
-                <span class="tex-label">Ceiling</span>
-                <label class="tex-upload-btn" for="input-ceiling-jpg">Choose .JPG</label>
-                <input type="file" id="input-ceiling-jpg" accept=".jpg,.jpeg,image/jpeg,image/png" style="display:none;">
-                <input type="range" id="slider-ceiling-repeat" class="tex-repeat-input" min="1" max="24" value="8" title="Ceiling Tile Repeat">
-                <span id="val-ceiling-repeat" class="tex-repeat-val">8x</span>
-            </div>
         </div>
     </div>
 
@@ -470,10 +159,10 @@
             wallJpg:    'images/wall.jpg',
             wallRepeat: { x: 8, y: 2 },
 
-            floorJpg:    'images/floor.jpg',
+            floorJpg:   'images/floor.jpg',
             floorRepeat: { x: 10, y: 10 },
 
-            ceilingJpg:    'images/ceiling.jpg',
+            ceilingJpg:   'images/ceiling.jpg',
             ceilingRepeat: { x: 8, y: 8 }
         };
 
@@ -613,7 +302,7 @@
         ceiling.position.y = wallHeight;
         scene.add(ceiling);
 
-        // 3. Outer Gallery Walls (Top & Bottom faces disabled so Floor & Ceiling planes show cleanly!)
+        // 3. Outer Gallery Walls
         const wallTexture = loadTiledJpg(ROOM_TEXTURES.wallJpg, ROOM_TEXTURES.wallRepeat.x, ROOM_TEXTURES.wallRepeat.y);
         const wallSideMat = new THREE.MeshStandardMaterial({ 
             map: wallTexture, 
@@ -622,7 +311,6 @@
         });
         const hiddenCapMat = new THREE.MeshBasicMaterial({ visible: false });
         const roomGeo = new THREE.BoxGeometry(roomSize, wallHeight, roomSize);
-        // BoxGeometry material order: [Right, Left, Top, Bottom, Front, Back]
         const roomMaterials = [
             wallSideMat,  // East wall
             wallSideMat,  // West wall
@@ -655,7 +343,6 @@
                     ceilingMat.needsUpdate = true;
                 },
                 () => {
-                    // Fallback dark gallery ceiling if images/ceiling.jpg hasn't been added yet
                     ceilingMat.map = null;
                     ceilingMat.color.setHex(0x18181f);
                     ceilingMat.needsUpdate = true;
@@ -819,23 +506,24 @@
             return frameGroup;
         }
 
+        const TYPEWRITER_FONT = '"American Typewriter", "Special Elite", "Courier Prime", "Courier New", monospace';
+
         function createTextTexture(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 1024;
             canvas.height = 1360;
             const ctx = canvas.getContext('2d');
 
-            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, '#1c1b20');
-            grad.addColorStop(1, '#121115');
-            ctx.fillStyle = grad;
+            // Crisp white background
+            ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.strokeStyle = '#d4af37';
-            ctx.lineWidth = 8;
+            // Clean black outer & inner borders
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 6;
             ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
 
-            ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
             ctx.lineWidth = 2;
             ctx.strokeRect(38, 38, canvas.width - 76, canvas.height - 76);
 
@@ -867,7 +555,7 @@
             }
 
             let bodyFontSize = 27;
-            let titleFontSize = 38;
+            let titleFontSize = 36;
             let lineHeight = 36;
             let emptyLineGap = 16;
             let paraSpacing = 6;
@@ -875,17 +563,17 @@
             let renderBlocks = [];
             let totalContentHeight = 0;
 
-            while (bodyFontSize >= 15) {
-                titleFontSize = Math.max(26, Math.round(bodyFontSize * 1.38));
-                lineHeight = Math.round(bodyFontSize * 1.34);
+            while (bodyFontSize >= 14) {
+                titleFontSize = Math.max(24, Math.round(bodyFontSize * 1.32));
+                lineHeight = Math.round(bodyFontSize * 1.36);
                 emptyLineGap = Math.max(8, Math.round(bodyFontSize * 0.55));
                 paraSpacing = Math.max(3, Math.round(bodyFontSize * 0.2));
 
-                ctx.font = `bold ${titleFontSize}px "Cinzel", Georgia, serif`;
+                ctx.font = `bold ${titleFontSize}px ${TYPEWRITER_FONT}`;
                 wrappedTitle = wrapLine(titleText);
-                const titleBlockHeight = wrappedTitle.length * (titleFontSize * 1.22) + 38;
+                const titleBlockHeight = wrappedTitle.length * (titleFontSize * 1.25) + 38;
 
-                ctx.font = `${bodyFontSize}px "Plus Jakarta Sans", sans-serif`;
+                ctx.font = `${bodyFontSize}px ${TYPEWRITER_FONT}`;
                 renderBlocks = [];
                 let bodyHeight = 0;
                 let prevWasEmpty = false;
@@ -918,15 +606,17 @@
             const extraSpace = Math.max(0, availableHeight - totalContentHeight);
             let y = topMargin + Math.min(50, extraSpace * 0.3);
 
-            ctx.font = `bold ${titleFontSize}px "Cinzel", Georgia, serif`;
-            ctx.fillStyle = '#f5d78e';
+            // Title in Black American Typewriter
+            ctx.font = `bold ${titleFontSize}px ${TYPEWRITER_FONT}`;
+            ctx.fillStyle = '#000000';
             wrappedTitle.forEach((tLine) => {
                 ctx.fillText(tLine, paddingX, y);
-                y += Math.round(titleFontSize * 1.22);
+                y += Math.round(titleFontSize * 1.25);
             });
 
+            // Black underline rule below title
             y -= Math.round(titleFontSize * 0.25);
-            ctx.strokeStyle = '#d4af37';
+            ctx.strokeStyle = '#000000';
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.moveTo(paddingX, y);
@@ -934,8 +624,9 @@
             ctx.stroke();
             y += Math.round(lineHeight * 1.05);
 
-            ctx.font = `${bodyFontSize}px "Plus Jakarta Sans", sans-serif`;
-            ctx.fillStyle = '#e8e6e3';
+            // Body text in Black American Typewriter
+            ctx.font = `${bodyFontSize}px ${TYPEWRITER_FONT}`;
+            ctx.fillStyle = '#000000';
 
             renderBlocks.forEach((block) => {
                 if (block.type === 'gap') {
@@ -957,788 +648,4 @@
 
         function create3DAudioButtonTexture(isPlaying) {
             const canvas = document.createElement('canvas');
-            canvas.width = 512;
-            canvas.height = 128;
-            const ctx = canvas.getContext('2d');
-
-            const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-            if (isPlaying) {
-                grad.addColorStop(0, '#d4af37');
-                grad.addColorStop(1, '#f5d78e');
-            } else {
-                grad.addColorStop(0, '#1f1e24');
-                grad.addColorStop(1, '#2b2933');
-            }
-
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            ctx.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 56);
-            ctx.fill();
-
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = isPlaying ? '#ffffff' : '#d4af37';
-            ctx.stroke();
-
-            ctx.fillStyle = isPlaying ? '#151519' : '#d4af37';
-            ctx.beginPath();
-            ctx.arc(68, 64, 36, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = isPlaying ? '#f5d78e' : '#151519';
-            if (isPlaying) {
-                ctx.fillRect(55, 48, 9, 32);
-                ctx.fillRect(72, 48, 9, 32);
-            } else {
-                ctx.beginPath();
-                ctx.moveTo(59, 46);
-                ctx.lineTo(85, 64);
-                ctx.lineTo(59, 82);
-                ctx.closePath();
-                ctx.fill();
-            }
-
-            ctx.font = 'bold 28px "Plus Jakarta Sans", sans-serif';
-            ctx.fillStyle = isPlaying ? '#151519' : '#f5d78e';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(isPlaying ? 'PLAYING STORY...' : 'LISTEN TO STORY', 124, 65);
-
-            const tex = new THREE.CanvasTexture(canvas);
-            tex.colorSpace = THREE.SRGBColorSpace;
-            return tex;
-        }
-
-        const btnTexIdle = create3DAudioButtonTexture(false);
-        const btnTexPlaying = create3DAudioButtonTexture(true);
-
-        // ==========================================
-        // 5. PLACE ARTWORKS, PLAQUES & 3D AUDIO BUTTONS
-        // ==========================================
-        const exhibitStations = [];
-        const interactiveButtons = [];
-
-        const wallDistribution = [
-            { count: 4, wall: 'north' },
-            { count: 3, wall: 'east'  },
-            { count: 4, wall: 'south' },
-            { count: 3, wall: 'west'  }
-        ];
-
-        let itemIndex = 0;
-        const wallOffset = (roomSize / 2) - 0.15;
-
-        wallDistribution.forEach(({ count, wall }) => {
-            for (let i = 0; i < count; i++) {
-                if (itemIndex >= galleryItems.length) break;
-                const item = galleryItems[itemIndex];
-
-                const stationGroup = new THREE.Group();
-                const spread = roomSize - 8;
-                const offsetAlongWall = -spread / 2 + (i + 0.5) * (spread / count);
-
-                if (wall === 'north') {
-                    stationGroup.position.set(offsetAlongWall, 3.3, -wallOffset);
-                    stationGroup.rotation.y = 0;
-                } else if (wall === 'east') {
-                    stationGroup.position.set(wallOffset, 3.3, offsetAlongWall);
-                    stationGroup.rotation.y = -Math.PI / 2;
-                } else if (wall === 'south') {
-                    stationGroup.position.set(-offsetAlongWall, 3.3, wallOffset);
-                    stationGroup.rotation.y = Math.PI;
-                } else if (wall === 'west') {
-                    stationGroup.position.set(-wallOffset, 3.3, -offsetAlongWall);
-                    stationGroup.rotation.y = Math.PI / 2;
-                }
-
-                const ornateFrame = createOrnateArtworkFrame(item.image);
-                ornateFrame.position.set(-1.85, 0, 0);
-                stationGroup.add(ornateFrame);
-
-                const plaqueGroup = new THREE.Group();
-                plaqueGroup.position.set(1.75, 0.18, 0);
-
-                const plaqueBackingGeo = new THREE.BoxGeometry(2.68, 3.48, 0.06);
-                const plaqueBacking = new THREE.Mesh(plaqueBackingGeo, brushedGoldMat);
-                plaqueBacking.position.z = 0.02;
-                plaqueGroup.add(plaqueBacking);
-
-                const textTex = createTextTexture(item.text);
-                const plaqueGeo = new THREE.PlaneGeometry(2.58, 3.38);
-                const plaqueMat = new THREE.MeshBasicMaterial({ map: textTex });
-                const plaqueMesh = new THREE.Mesh(plaqueGeo, plaqueMat);
-                plaqueMesh.position.z = 0.055;
-                plaqueGroup.add(plaqueMesh);
-                stationGroup.add(plaqueGroup);
-
-                const btnGroup = new THREE.Group();
-                btnGroup.position.set(1.75, -1.86, 0.06);
-
-                const btnBackingGeo = new THREE.BoxGeometry(1.66, 0.44, 0.05);
-                const btnBacking = new THREE.Mesh(btnBackingGeo, brushedGoldMat);
-                btnGroup.add(btnBacking);
-
-                const btnFaceGeo = new THREE.PlaneGeometry(1.6, 0.4);
-                const btnFaceMat = new THREE.MeshBasicMaterial({ map: btnTexIdle, transparent: true });
-                const btnFaceMesh = new THREE.Mesh(btnFaceGeo, btnFaceMat);
-                btnFaceMesh.position.z = 0.03;
-                btnGroup.add(btnFaceMesh);
-
-                stationGroup.add(btnGroup);
-                scene.add(stationGroup);
-
-                const narrationAudio = new Audio(item.audio);
-                narrationAudio.preload = 'auto';
-
-                const stationData = {
-                    group: stationGroup,
-                    audio: narrationAudio,
-                    title: item.text.split('\n')[0],
-                    btnMesh: btnFaceMesh,
-                    btnGroup: btnGroup,
-                    manuallyPaused: false
-                };
-
-                btnFaceMesh.userData.station = stationData;
-                interactiveButtons.push(btnFaceMesh);
-                exhibitStations.push(stationData);
-
-                itemIndex++;
-            }
-        });
-
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(() => {
-                exhibitStations.forEach((st, idx) => {
-                    const plaqueMesh = st.group.children[1].children[1];
-                    plaqueMesh.material.map = createTextTexture(galleryItems[idx].text);
-                    plaqueMesh.material.needsUpdate = true;
-                });
-            });
-        }
-
-        // ==========================================
-        // 5B. GALLERY BENCHES, DECORATIVE PLANTS & CENTER SCULPTURE
-        // ==========================================
-        const colliders = [];
-
-        const leatherMat = new THREE.MeshStandardMaterial({
-            color: 0x261c18,
-            roughness: 0.42,
-            metalness: 0.08
-        });
-
-        const darkPlanterMat = new THREE.MeshStandardMaterial({
-            color: 0x1b1c20,
-            roughness: 0.5,
-            metalness: 0.2
-        });
-
-        const soilMat = new THREE.MeshStandardMaterial({
-            color: 0x2b1d14,
-            roughness: 0.95
-        });
-
-        const leafMat = new THREE.MeshStandardMaterial({
-            color: 0x2e6f40,
-            roughness: 0.45,
-            metalness: 0.05,
-            side: THREE.DoubleSide
-        });
-
-        const leafLightMat = new THREE.MeshStandardMaterial({
-            color: 0x488e56,
-            roughness: 0.4,
-            metalness: 0.05,
-            side: THREE.DoubleSide
-        });
-
-        function createGalleryBench() {
-            const bench = new THREE.Group();
-            const length = 3.6;
-            const depth = 1.25;
-
-            const baseGeo = new THREE.BoxGeometry(length, 0.12, depth);
-            const baseMesh = new THREE.Mesh(baseGeo, darkWalnutMat);
-            baseMesh.position.y = 0.42;
-            bench.add(baseMesh);
-
-            const trimGeo = new THREE.BoxGeometry(length + 0.02, 0.03, depth + 0.02);
-            const trimMesh = new THREE.Mesh(trimGeo, brushedGoldMat);
-            trimMesh.position.y = 0.35;
-            bench.add(trimMesh);
-
-            const cushionGeo = new THREE.BoxGeometry(length - 0.06, 0.18, depth - 0.06);
-            const cushionMesh = new THREE.Mesh(cushionGeo, leatherMat);
-            cushionMesh.position.y = 0.57;
-            bench.add(cushionMesh);
-
-            const seamGeo = new THREE.BoxGeometry(0.02, 0.19, depth - 0.04);
-            const seamMat = new THREE.MeshStandardMaterial({ color: 0x140e0b, roughness: 0.8 });
-            const buttonGeo = new THREE.SphereGeometry(0.025, 10, 10);
-
-            for (let i = -2; i <= 2; i++) {
-                const xPos = i * 0.62;
-                const seam = new THREE.Mesh(seamGeo, seamMat);
-                seam.position.set(xPos, 0.57, 0);
-                bench.add(seam);
-
-                [-0.28, 0.28].forEach((zPos) => {
-                    const btn = new THREE.Mesh(buttonGeo, brushedGoldMat);
-                    btn.position.set(xPos, 0.66, zPos);
-                    bench.add(btn);
-                });
-            }
-
-            const bolsterGeo = new THREE.CylinderGeometry(0.14, 0.14, length - 0.5, 20);
-            const bolster = new THREE.Mesh(bolsterGeo, leatherMat);
-            bolster.rotation.z = Math.PI / 2;
-            bolster.position.y = 0.88;
-            bench.add(bolster);
-
-            [-1.1, 0, 1.1].forEach((postX) => {
-                const postGeo = new THREE.CylinderGeometry(0.028, 0.028, 0.26, 12);
-                const post = new THREE.Mesh(postGeo, brushedGoldMat);
-                post.position.set(postX, 0.72, 0);
-                bench.add(post);
-            });
-
-            const legGeo = new THREE.CylinderGeometry(0.055, 0.035, 0.36, 14);
-            const footGeo = new THREE.CylinderGeometry(0.042, 0.045, 0.06, 14);
-            const legX = (length / 2) - 0.28;
-            const legZ = (depth / 2) - 0.22;
-
-            [
-                [-legX, -legZ],
-                [legX, -legZ],
-                [-legX, legZ],
-                [legX, legZ]
-            ].forEach(([lx, lz]) => {
-                const leg = new THREE.Mesh(legGeo, darkWalnutMat);
-                leg.position.set(lx, 0.18, lz);
-                bench.add(leg);
-
-                const foot = new THREE.Mesh(footGeo, brushedGoldMat);
-                foot.position.set(lx, 0.03, lz);
-                bench.add(foot);
-            });
-
-            return bench;
-        }
-
-        function createDecorativePlant(scaleMultiplier = 1.0) {
-            const plantGroup = new THREE.Group();
-
-            const potGeo = new THREE.CylinderGeometry(0.56, 0.38, 0.92, 24);
-            const potMesh = new THREE.Mesh(potGeo, darkPlanterMat);
-            potMesh.position.y = 0.46;
-            plantGroup.add(potMesh);
-
-            const rimGeo = new THREE.TorusGeometry(0.56, 0.032, 12, 32);
-            const rimMesh = new THREE.Mesh(rimGeo, brushedGoldMat);
-            rimMesh.rotation.x = Math.PI / 2;
-            rimMesh.position.y = 0.92;
-            plantGroup.add(rimMesh);
-
-            const soilGeo = new THREE.CylinderGeometry(0.53, 0.53, 0.04, 20);
-            const soilMesh = new THREE.Mesh(soilGeo, soilMat);
-            soilMesh.position.y = 0.89;
-            plantGroup.add(soilMesh);
-
-            for (let s = 0; s < 3; s++) {
-                const stemH = 0.85 + s * 0.22;
-                const stemGeo = new THREE.CylinderGeometry(0.03, 0.05, stemH, 10);
-                const stem = new THREE.Mesh(stemGeo, darkWalnutMat);
-                stem.position.set((s - 1) * 0.08, 0.9 + stemH / 2, (s % 2 === 0 ? 0.05 : -0.05));
-                stem.rotation.z = (s - 1) * 0.08;
-                plantGroup.add(stem);
-            }
-
-            const tiers = [
-                { count: 7, height: 1.15, tilt: 0.82, len: 1.05, width: 0.34, mat: leafMat },
-                { count: 6, height: 1.45, tilt: 0.55, len: 0.95, width: 0.30, mat: leafLightMat },
-                { count: 5, height: 1.72, tilt: 0.28, len: 0.78, width: 0.25, mat: leafLightMat }
-            ];
-
-            tiers.forEach((tier, tIdx) => {
-                for (let i = 0; i < tier.count; i++) {
-                    const angle = (i / tier.count) * Math.PI * 2 + (tIdx * 0.4);
-                    const frondPivot = new THREE.Group();
-                    frondPivot.position.set(0, tier.height, 0);
-                    frondPivot.rotation.y = angle;
-                    frondPivot.rotation.x = tier.tilt;
-
-                    const segLen = tier.len / 3;
-                    let segParent = frondPivot;
-
-                    for (let seg = 0; seg < 3; seg++) {
-                        const segWidth = tier.width * (1 - seg * 0.25);
-                        const bladeGeo = new THREE.PlaneGeometry(segWidth, segLen);
-                        bladeGeo.translate(0, segLen / 2, 0);
-
-                        const bladeMesh = new THREE.Mesh(bladeGeo, tier.mat);
-                        if (seg > 0) {
-                            bladeMesh.position.y = segLen;
-                            bladeMesh.rotation.x = 0.26;
-                        }
-                        segParent.add(bladeMesh);
-                        segParent = bladeMesh;
-                    }
-
-                    plantGroup.add(frondPivot);
-                }
-            });
-
-            plantGroup.scale.setScalar(scaleMultiplier);
-            return plantGroup;
-        }
-
-        const benchLocations = [
-            { x: 0, z: -7.5, rotY: 0 },
-            { x: 0, z: 7.5,  rotY: Math.PI },
-            { x: 7.5, z: 0,  rotY: -Math.PI / 2 },
-            { x: -7.5, z: 0, rotY: Math.PI / 2 }
-        ];
-
-        benchLocations.forEach(({ x, z, rotY }) => {
-            const bench = createGalleryBench();
-            bench.position.set(x, 0, z);
-            bench.rotation.y = rotY;
-            scene.add(bench);
-            colliders.push({ x, z, radius: 1.9 });
-        });
-
-        const plantLocations = [
-            { x: -6.5, z: -6.5, scale: 1.1 },
-            { x: 6.5,  z: -6.5, scale: 1.1 },
-            { x: -6.5, z: 6.5,  scale: 1.1 },
-            { x: 6.5,  z: 6.5,  scale: 1.1 },
-            { x: -16.5, z: -16.5, scale: 1.35 },
-            { x: 16.5,  z: -16.5, scale: 1.35 },
-            { x: -16.5, z: 16.5,  scale: 1.35 },
-            { x: 16.5,  z: 16.5,  scale: 1.35 }
-        ];
-
-        plantLocations.forEach(({ x, z, scale }, idx) => {
-            const plant = createDecorativePlant(scale);
-            plant.position.set(x, 0, z);
-            plant.rotation.y = idx * 1.1;
-            scene.add(plant);
-            colliders.push({ x, z, radius: 0.85 * scale });
-        });
-
-        const centerFeature = new THREE.Group();
-        const plinthGeo = new THREE.CylinderGeometry(1.15, 1.3, 1.15, 8);
-        const plinthMesh = new THREE.Mesh(plinthGeo, darkPlanterMat);
-        plinthMesh.position.y = 0.575;
-        centerFeature.add(plinthMesh);
-
-        const plinthCapGeo = new THREE.CylinderGeometry(1.22, 1.22, 0.08, 8);
-        const plinthCap = new THREE.Mesh(plinthCapGeo, brushedGoldMat);
-        plinthCap.position.y = 1.18;
-        centerFeature.add(plinthCap);
-
-        const sculptureGroup = new THREE.Group();
-        sculptureGroup.position.y = 2.25;
-
-        const ring1Geo = new THREE.TorusGeometry(0.68, 0.09, 20, 64);
-        const ring1 = new THREE.Mesh(ring1Geo, brushedGoldMat);
-        sculptureGroup.add(ring1);
-
-        const ring2Geo = new THREE.TorusGeometry(0.46, 0.07, 20, 64);
-        const ring2 = new THREE.Mesh(ring2Geo, brushedGoldMat);
-        ring2.rotation.y = Math.PI / 2;
-        ring2.rotation.x = Math.PI / 4;
-        sculptureGroup.add(ring2);
-
-        const coreGeo = new THREE.OctahedronGeometry(0.22, 0);
-        const coreMesh = new THREE.Mesh(coreGeo, creamMatboardMat);
-        sculptureGroup.add(coreMesh);
-
-        centerFeature.add(sculptureGroup);
-        scene.add(centerFeature);
-        colliders.push({ x: 0, z: 0, radius: 1.55 });
-
-        // ==========================================
-        // 6. AUDIO CONTROLLER, HUD & TEXTURE PICKER UI
-        // ==========================================
-        const bgMusic = new Audio('audio/background.mp3');
-        bgMusic.loop = true;
-        bgMusic.volume = 0.25;
-        let bgmEnabled = true;
-
-        let audioUnlocked = false;
-        let activeStation = null;
-
-        const audioHud = document.getElementById('audio-hud');
-        const btnPlayToggle = document.getElementById('btn-play-toggle');
-        const iconPlay = document.getElementById('icon-play');
-        const iconPause = document.getElementById('icon-pause');
-        const hudTrackTitle = document.getElementById('hud-track-title');
-        const btnRestart = document.getElementById('btn-restart');
-        const btnBgm = document.getElementById('btn-bgm');
-        const progressTrack = document.getElementById('progress-track');
-        const progressFill = document.getElementById('progress-fill');
-        const timeCurrent = document.getElementById('time-current');
-        const timeTotal = document.getElementById('time-total');
-
-        // Live Floor & Ceiling JPG Picker Elements
-        const btnTexPanel = document.getElementById('btn-tex-panel');
-        const texturePanel = document.getElementById('texture-panel');
-        const inputFloorJpg = document.getElementById('input-floor-jpg');
-        const inputCeilingJpg = document.getElementById('input-ceiling-jpg');
-        const sliderFloorRepeat = document.getElementById('slider-floor-repeat');
-        const sliderCeilingRepeat = document.getElementById('slider-ceiling-repeat');
-        const valFloorRepeat = document.getElementById('val-floor-repeat');
-        const valCeilingRepeat = document.getElementById('val-ceiling-repeat');
-
-        btnTexPanel.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isOpen = texturePanel.classList.toggle('open');
-            btnTexPanel.classList.toggle('active', isOpen);
-        });
-
-        inputFloorJpg.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const objectUrl = URL.createObjectURL(file);
-            const rep = parseInt(sliderFloorRepeat.value, 10) || 10;
-            setFloorTextureJpg(objectUrl, rep, rep);
-        });
-
-        inputCeilingJpg.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const objectUrl = URL.createObjectURL(file);
-            const rep = parseInt(sliderCeilingRepeat.value, 10) || 8;
-            setCeilingTextureJpg(objectUrl, rep, rep);
-        });
-
-        sliderFloorRepeat.addEventListener('input', (e) => {
-            const rep = parseInt(e.target.value, 10);
-            valFloorRepeat.textContent = `${rep}x`;
-            if (floorMat.map) {
-                floorMat.map.repeat.set(rep, rep);
-                floorMat.map.needsUpdate = true;
-            }
-        });
-
-        sliderCeilingRepeat.addEventListener('input', (e) => {
-            const rep = parseInt(e.target.value, 10);
-            valCeilingRepeat.textContent = `${rep}x`;
-            if (ceilingMat.map) {
-                ceilingMat.map.repeat.set(rep, rep);
-                ceilingMat.map.needsUpdate = true;
-            }
-        });
-
-        function formatTime(sec) {
-            if (!sec || isNaN(sec)) return '0:00';
-            const m = Math.floor(sec / 60);
-            const s = Math.floor(sec % 60);
-            return `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-
-        function unlockAudio() {
-            if (audioUnlocked) return;
-            audioUnlocked = true;
-            if (bgmEnabled) {
-                bgMusic.play().catch(() => {});
-            }
-        }
-
-        function syncAudioUI() {
-            exhibitStations.forEach((st) => {
-                const isThisPlaying = (st === activeStation && !st.audio.paused);
-                st.btnMesh.material.map = isThisPlaying ? btnTexPlaying : btnTexIdle;
-                st.btnMesh.material.needsUpdate = true;
-            });
-
-            if (!activeStation) {
-                btnPlayToggle.disabled = true;
-                audioHud.classList.remove('playing');
-                iconPlay.style.display = 'block';
-                iconPause.style.display = 'none';
-                hudTrackTitle.textContent = 'Walk near an artwork...';
-                progressFill.style.width = '0%';
-                timeCurrent.textContent = '0:00';
-                timeTotal.textContent = '0:00';
-                if (bgmEnabled) bgMusic.volume = 0.25;
-                return;
-            }
-
-            btnPlayToggle.disabled = false;
-            hudTrackTitle.textContent = activeStation.title;
-            const isPlaying = !activeStation.audio.paused;
-
-            if (isPlaying) {
-                audioHud.classList.add('playing');
-                iconPlay.style.display = 'none';
-                iconPause.style.display = 'block';
-                if (bgmEnabled) bgMusic.volume = 0.06;
-            } else {
-                audioHud.classList.remove('playing');
-                iconPlay.style.display = 'block';
-                iconPause.style.display = 'none';
-                if (bgmEnabled) bgMusic.volume = 0.20;
-            }
-        }
-
-        function toggleStationAudio(station) {
-            unlockAudio();
-            if (!station) return;
-
-            if (activeStation && activeStation !== station) {
-                activeStation.audio.pause();
-                activeStation.audio.currentTime = 0;
-                activeStation.manuallyPaused = false;
-            }
-
-            activeStation = station;
-
-            if (station.audio.paused) {
-                station.manuallyPaused = false;
-                station.audio.play().then(syncAudioUI).catch((err) => {
-                    console.warn("Audio playback issue:", err);
-                });
-            } else {
-                station.manuallyPaused = true;
-                station.audio.pause();
-                syncAudioUI();
-            }
-        }
-
-        exhibitStations.forEach((st) => {
-            st.audio.addEventListener('timeupdate', () => {
-                if (st === activeStation) {
-                    const cur = st.audio.currentTime;
-                    const dur = st.audio.duration || 0;
-                    timeCurrent.textContent = formatTime(cur);
-                    timeTotal.textContent = formatTime(dur);
-                    progressFill.style.width = dur > 0 ? `${(cur / dur) * 100}%` : '0%';
-                }
-            });
-            st.audio.addEventListener('ended', () => {
-                st.manuallyPaused = true;
-                syncAudioUI();
-            });
-            st.audio.addEventListener('play', syncAudioUI);
-            st.audio.addEventListener('pause', syncAudioUI);
-        });
-
-        btnPlayToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (activeStation) toggleStationAudio(activeStation);
-        });
-
-        btnRestart.addEventListener('click', (e) => {
-            e.stopPropagation();
-            unlockAudio();
-            if (activeStation) {
-                activeStation.audio.currentTime = 0;
-                activeStation.manuallyPaused = false;
-                activeStation.audio.play().catch(() => {});
-            }
-        });
-
-        btnBgm.addEventListener('click', (e) => {
-            e.stopPropagation();
-            unlockAudio();
-            bgmEnabled = !bgmEnabled;
-            btnBgm.classList.toggle('active', bgmEnabled);
-            if (bgmEnabled) {
-                bgMusic.play().catch(() => {});
-            } else {
-                bgMusic.pause();
-            }
-        });
-
-        progressTrack.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (!activeStation || !activeStation.audio.duration) return;
-            const rect = progressTrack.getBoundingClientRect();
-            const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-            activeStation.audio.currentTime = ratio * activeStation.audio.duration;
-        });
-
-        function updateProximityAudio() {
-            if (!audioUnlocked) return;
-
-            const playerPos = new THREE.Vector3();
-            camera.getWorldPosition(playerPos);
-
-            let closestStation = null;
-            let minDistance = Infinity;
-            const triggerDistance = 5.0;
-
-            for (const station of exhibitStations) {
-                const dist = playerPos.distanceTo(station.group.position);
-                if (dist < triggerDistance && dist < minDistance) {
-                    minDistance = dist;
-                    closestStation = station;
-                }
-            }
-
-            if (closestStation !== activeStation) {
-                if (activeStation) {
-                    activeStation.audio.pause();
-                    activeStation.audio.currentTime = 0;
-                    activeStation.manuallyPaused = false;
-                }
-
-                activeStation = closestStation;
-
-                if (activeStation && !activeStation.manuallyPaused) {
-                    activeStation.audio.play().catch(() => {});
-                }
-                syncAudioUI();
-            }
-        }
-
-        // ==========================================
-        // 7. CONTROLS & 3D RAYCASTER FOR PLAQUE BUTTONS
-        // ==========================================
-        const moveState = { forward: false, backward: false, left: false, right: false };
-        const raycaster = new THREE.Raycaster();
-        const pointerNDC = new THREE.Vector2();
-
-        window.addEventListener('keydown', (e) => {
-            unlockAudio();
-            if (e.code === 'KeyW' || e.code === 'ArrowUp') moveState.forward = true;
-            if (e.code === 'KeyS' || e.code === 'ArrowDown') moveState.backward = true;
-            if (e.code === 'KeyA' || e.code === 'ArrowLeft') moveState.left = true;
-            if (e.code === 'KeyD' || e.code === 'ArrowRight') moveState.right = true;
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (e.code === 'KeyW' || e.code === 'ArrowUp') moveState.forward = false;
-            if (e.code === 'KeyS' || e.code === 'ArrowDown') moveState.backward = false;
-            if (e.code === 'KeyA' || e.code === 'ArrowLeft') moveState.left = false;
-            if (e.code === 'KeyD' || e.code === 'ArrowRight') moveState.right = false;
-        });
-
-        function bindDpadButton(id, dirKey) {
-            const btn = document.getElementById(id);
-            const start = (e) => { e.preventDefault(); unlockAudio(); moveState[dirKey] = true; };
-            const end = (e) => { e.preventDefault(); moveState[dirKey] = false; };
-
-            btn.addEventListener('pointerdown', start);
-            btn.addEventListener('pointerup', end);
-            btn.addEventListener('pointerleave', end);
-            btn.addEventListener('pointercancel', end);
-        }
-
-        bindDpadButton('btn-up', 'forward');
-        bindDpadButton('btn-down', 'backward');
-        bindDpadButton('btn-left', 'left');
-        bindDpadButton('btn-right', 'right');
-
-        let isDragging = false;
-        let dragDistance = 0;
-        let prevPointer = { x: 0, y: 0 };
-
-        renderer.domElement.addEventListener('pointerdown', (e) => {
-            unlockAudio();
-            isDragging = true;
-            dragDistance = 0;
-            prevPointer.x = e.clientX;
-            prevPointer.y = e.clientY;
-        });
-
-        window.addEventListener('pointermove', (e) => {
-            if (!isDragging) {
-                pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
-                pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                raycaster.setFromCamera(pointerNDC, camera);
-                const hits = raycaster.intersectObjects(interactiveButtons);
-                renderer.domElement.style.cursor = (hits.length > 0 && hits[0].distance < 12) ? 'pointer' : 'grab';
-                return;
-            }
-
-            if (renderer.xr.isPresenting) return;
-            const dx = e.clientX - prevPointer.x;
-            const dy = e.clientY - prevPointer.y;
-            dragDistance += Math.hypot(dx, dy);
-            prevPointer.x = e.clientX;
-            prevPointer.y = e.clientY;
-
-            playerRig.rotation.y -= dx * 0.004;
-            camera.rotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, camera.rotation.x - dy * 0.004));
-        });
-
-        window.addEventListener('pointerup', (e) => {
-            if (isDragging && dragDistance < 8 && e.target === renderer.domElement) {
-                pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
-                pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                raycaster.setFromCamera(pointerNDC, camera);
-                const hits = raycaster.intersectObjects(interactiveButtons);
-                if (hits.length > 0 && hits[0].distance < 12) {
-                    const clickedStation = hits[0].object.userData.station;
-                    toggleStationAudio(clickedStation);
-                }
-            }
-            isDragging = false;
-        });
-
-        // ==========================================
-        // 8. ANIMATION LOOP, COLLISIONS & RESIZE
-        // ==========================================
-        const clock = new THREE.Clock();
-        const moveSpeed = 5.0;
-        const turnSpeed = 1.6;
-        const boundaryLimit = (roomSize / 2) - 1.6;
-
-        renderer.setAnimationLoop(() => {
-            const delta = clock.getDelta();
-            const elapsed = clock.getElapsedTime();
-
-            sculptureGroup.rotation.y = elapsed * 0.35;
-            sculptureGroup.position.y = 2.25 + Math.sin(elapsed * 1.5) * 0.06;
-
-            if (moveState.left) playerRig.rotation.y += turnSpeed * delta;
-            if (moveState.right) playerRig.rotation.y -= turnSpeed * delta;
-
-            if (moveState.forward || moveState.backward) {
-                const dir = new THREE.Vector3();
-                camera.getWorldDirection(dir);
-                dir.y = 0;
-                dir.normalize();
-
-                const sign = moveState.forward ? 1 : -1;
-                playerRig.position.addScaledVector(dir, sign * moveSpeed * delta);
-
-                playerRig.position.x = Math.max(-boundaryLimit, Math.min(boundaryLimit, playerRig.position.x));
-                playerRig.position.z = Math.max(-boundaryLimit, Math.min(boundaryLimit, playerRig.position.z));
-
-                for (const col of colliders) {
-                    const dx = playerRig.position.x - col.x;
-                    const dz = playerRig.position.z - col.z;
-                    const dist = Math.hypot(dx, dz);
-                    if (dist < col.radius && dist > 0.001) {
-                        const overlap = col.radius - dist;
-                        playerRig.position.x += (dx / dist) * overlap;
-                        playerRig.position.z += (dz / dist) * overlap;
-                    }
-                }
-            }
-
-            exhibitStations.forEach((st) => {
-                if (st === activeStation && !st.audio.paused) {
-                    const pulse = 1 + Math.sin(elapsed * 5) * 0.035;
-                    st.btnGroup.scale.set(pulse, pulse, 1);
-                } else {
-                    st.btnGroup.scale.set(1, 1, 1);
-                }
-            });
-
-            updateProximityAudio();
-            renderer.render(scene, camera);
-        });
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
-</body>
-</html>
+            canvas.width = 5
