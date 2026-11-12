@@ -641,7 +641,7 @@
                 wrappedTitle = wrapLine(titleText);
                 const titleBlockHeight = wrappedTitle.length * (titleFontSize * 1.25) + 38;
 
-                ctx.font = `${bodyFontSize}px ${TYPEWRITER_FONT}`;
+                ctx.font = `bold ${bodyFontSize}px ${TYPEWRITER_FONT}`;
                 renderBlocks = [];
                 let bodyHeight = 0;
                 let prevWasEmpty = false;
@@ -693,7 +693,7 @@
             y += Math.round(lineHeight * 1.05);
 
             // Body text in Black American Typewriter
-            ctx.font = `${bodyFontSize}px ${TYPEWRITER_FONT}`;
+            ctx.font = `bold ${bodyFontSize}px ${TYPEWRITER_FONT}`;
             ctx.fillStyle = '#000000';
 
             renderBlocks.forEach((block) => {
