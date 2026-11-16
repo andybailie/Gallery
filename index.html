@@ -314,7 +314,6 @@
             return tex;
         }
 
-        // 1. Floor Mesh & JPG Texture (with safe fallback if images/floor.jpg is missing)
         const floorMat = new THREE.MeshStandardMaterial({ 
             color: 0x3a2d24,
             roughness: 0.75,
@@ -325,7 +324,6 @@
         floor.rotation.x = -Math.PI / 2;
         scene.add(floor);
 
-        // 2. Ceiling Mesh & JPG Texture
         const ceilingMat = new THREE.MeshStandardMaterial({ 
             color: 0x18181f,
             roughness: 0.85,
@@ -337,7 +335,6 @@
         ceiling.position.y = wallHeight;
         scene.add(ceiling);
 
-        // 3. Outer Gallery Walls (with safe fallback color if images/wall.jpg is missing)
         const wallSideMat = new THREE.MeshStandardMaterial({ 
             color: 0x2a2931,
             side: THREE.BackSide,
@@ -362,12 +359,12 @@
         const hiddenCapMat = new THREE.MeshBasicMaterial({ visible: false });
         const roomGeo = new THREE.BoxGeometry(roomSize, wallHeight, roomSize);
         const roomMaterials = [
-            wallSideMat,  // East wall
-            wallSideMat,  // West wall
-            hiddenCapMat, // Top cap disabled
-            hiddenCapMat, // Bottom cap disabled
-            wallSideMat,  // South wall
-            wallSideMat   // North wall
+            wallSideMat,
+            wallSideMat,
+            hiddenCapMat,
+            hiddenCapMat,
+            wallSideMat,
+            wallSideMat
         ];
         const roomMesh = new THREE.Mesh(roomGeo, roomMaterials);
         roomMesh.position.y = wallHeight / 2;
@@ -412,7 +409,6 @@
         setFloorTextureJpg(ROOM_TEXTURES.floorJpg, ROOM_TEXTURES.floorRepeat.x, ROOM_TEXTURES.floorRepeat.y);
         setCeilingTextureJpg(ROOM_TEXTURES.ceilingJpg, ROOM_TEXTURES.ceilingRepeat.x, ROOM_TEXTURES.ceilingRepeat.y);
 
-        // Web Asset: Rich Hardwood Grain from Official Three.js CDN for Museum Frames & Benches
         const woodTexture = textureLoader.load('https://threejs.org/examples/textures/hardwood2_diffuse.jpg');
         woodTexture.wrapS = THREE.RepeatWrapping;
         woodTexture.wrapT = THREE.RepeatWrapping;
@@ -423,20 +419,14 @@
         woodRoughness.wrapT = THREE.RepeatWrapping;
 
         // ==========================================
-        // 4. MUSEUM FRAME, AUTO-FIT PLAQUE & 3D AUDIO BUTTON
+        // 4. HUMBLE MUSEUM FRAME & PLAQUE SYSTEM
         // ==========================================
-        const darkWalnutMat = new THREE.MeshStandardMaterial({
+        const plainWoodMat = new THREE.MeshStandardMaterial({
             map: woodTexture,
             roughnessMap: woodRoughness,
-            color: 0x6e472b,
-            roughness: 0.45,
-            metalness: 0.1
-        });
-
-        const brushedGoldMat = new THREE.MeshStandardMaterial({
-            color: 0xd4af37,
-            metalness: 0.85,
-            roughness: 0.25
+            color: 0x5a3d2b,
+            roughness: 0.6,
+            metalness: 0.05
         });
 
         const creamMatboardMat = new THREE.MeshStandardMaterial({
@@ -449,89 +439,35 @@
             const frameGroup = new THREE.Group();
             const artWidth = 2.85;
             const artHeight = 2.85;
-            const matMargin = 0.26;
+            const matMargin = 0.22;
             const outerWidth = artWidth + matMargin * 2;
             const outerHeight = artHeight + matMargin * 2;
-            const mouldingWidth = 0.22;
-            const mouldingDepth = 0.16;
+            const mouldingWidth = 0.12;
+            const mouldingDepth = 0.10;
 
-            const matboardGeo = new THREE.BoxGeometry(outerWidth, outerHeight, 0.04);
+            const matboardGeo = new THREE.BoxGeometry(outerWidth, outerHeight, 0.03);
             const matboardMesh = new THREE.Mesh(matboardGeo, creamMatboardMat);
-            matboardMesh.position.z = 0.02;
+            matboardMesh.position.z = 0.015;
             frameGroup.add(matboardMesh);
 
             const topBottomGeo = new THREE.BoxGeometry(outerWidth + mouldingWidth * 2, mouldingWidth, mouldingDepth);
             const leftRightGeo = new THREE.BoxGeometry(mouldingWidth, outerHeight, mouldingDepth);
 
-            const topBar = new THREE.Mesh(topBottomGeo, darkWalnutMat);
+            const topBar = new THREE.Mesh(topBottomGeo, plainWoodMat);
             topBar.position.set(0, outerHeight / 2 + mouldingWidth / 2, mouldingDepth / 2);
             frameGroup.add(topBar);
 
-            const bottomBar = new THREE.Mesh(topBottomGeo, darkWalnutMat);
+            const bottomBar = new THREE.Mesh(topBottomGeo, plainWoodMat);
             bottomBar.position.set(0, -outerHeight / 2 - mouldingWidth / 2, mouldingDepth / 2);
             frameGroup.add(bottomBar);
 
-            const leftBar = new THREE.Mesh(leftRightGeo, darkWalnutMat);
+            const leftBar = new THREE.Mesh(leftRightGeo, plainWoodMat);
             leftBar.position.set(-outerWidth / 2 - mouldingWidth / 2, 0, mouldingDepth / 2);
             frameGroup.add(leftBar);
 
-            const rightBar = new THREE.Mesh(leftRightGeo, darkWalnutMat);
+            const rightBar = new THREE.Mesh(leftRightGeo, plainWoodMat);
             rightBar.position.set(outerWidth / 2 + mouldingWidth / 2, 0, mouldingDepth / 2);
             frameGroup.add(rightBar);
-
-            const lipThickness = 0.045;
-            const lipDepth = 0.11;
-            const hLipGeo = new THREE.BoxGeometry(outerWidth + lipThickness * 2, lipThickness, lipDepth);
-            const vLipGeo = new THREE.BoxGeometry(lipThickness, outerHeight, lipDepth);
-
-            const topLip = new THREE.Mesh(hLipGeo, brushedGoldMat);
-            topLip.position.set(0, outerHeight / 2 + lipThickness / 2, lipDepth / 2);
-            frameGroup.add(topLip);
-
-            const bottomLip = new THREE.Mesh(hLipGeo, brushedGoldMat);
-            bottomLip.position.set(0, -outerHeight / 2 - lipThickness / 2, lipDepth / 2);
-            frameGroup.add(bottomLip);
-
-            const leftLip = new THREE.Mesh(vLipGeo, brushedGoldMat);
-            leftLip.position.set(-outerWidth / 2 - lipThickness / 2, 0, lipDepth / 2);
-            frameGroup.add(leftLip);
-
-            const rightLip = new THREE.Mesh(vLipGeo, brushedGoldMat);
-            rightLip.position.set(outerWidth / 2 + lipThickness / 2, 0, lipDepth / 2);
-            frameGroup.add(rightLip);
-
-            const innerLipSize = 0.03;
-            const innerHGeo = new THREE.BoxGeometry(artWidth + innerLipSize * 2, innerLipSize, 0.06);
-            const innerVGeo = new THREE.BoxGeometry(innerLipSize, artHeight, 0.06);
-
-            const iTop = new THREE.Mesh(innerHGeo, brushedGoldMat);
-            iTop.position.set(0, artHeight / 2 + innerLipSize / 2, 0.035);
-            frameGroup.add(iTop);
-
-            const iBottom = new THREE.Mesh(innerHGeo, brushedGoldMat);
-            iBottom.position.set(0, -artHeight / 2 - innerLipSize / 2, 0.035);
-            frameGroup.add(iBottom);
-
-            const iLeft = new THREE.Mesh(innerVGeo, brushedGoldMat);
-            iLeft.position.set(-artWidth / 2 - innerLipSize / 2, 0, 0.035);
-            frameGroup.add(iLeft);
-
-            const iRight = new THREE.Mesh(innerVGeo, brushedGoldMat);
-            iRight.position.set(artWidth / 2 + innerLipSize / 2, 0, 0.035);
-            frameGroup.add(iRight);
-
-            const cornerGeo = new THREE.BoxGeometry(mouldingWidth * 1.05, mouldingWidth * 1.05, mouldingDepth + 0.02);
-            const cornerOffset = outerWidth / 2 + mouldingWidth / 2;
-            [
-                [-cornerOffset, cornerOffset],
-                [cornerOffset, cornerOffset],
-                [-cornerOffset, -cornerOffset],
-                [cornerOffset, -cornerOffset]
-            ].forEach(([cx, cy]) => {
-                const cornerMesh = new THREE.Mesh(cornerGeo, brushedGoldMat);
-                cornerMesh.position.set(cx, cy, (mouldingDepth + 0.02) / 2);
-                frameGroup.add(cornerMesh);
-            });
 
             const artGeo = new THREE.PlaneGeometry(artWidth, artHeight);
             const artMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -548,10 +484,9 @@
                 }
             );
             const artMesh = new THREE.Mesh(artGeo, artMat);
-            artMesh.position.z = 0.052;
+            artMesh.position.z = 0.035;
             frameGroup.add(artMesh);
 
-            
             return frameGroup;
         }
 
@@ -563,18 +498,12 @@
             canvas.height = 1360;
             const ctx = canvas.getContext('2d');
 
-            // Crisp white background
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Clean black outer & inner borders
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 6;
+            ctx.strokeStyle = '#222222';
+            ctx.lineWidth = 4;
             ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
-
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(38, 38, canvas.width - 76, canvas.height - 76);
 
             const normalizedText = text.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
             const rawLines = normalizedText.split('\n');
@@ -655,7 +584,6 @@
             const extraSpace = Math.max(0, availableHeight - totalContentHeight);
             let y = topMargin + Math.min(50, extraSpace * 0.3);
 
-            // Title in Black American Typewriter
             ctx.font = `bold ${titleFontSize}px ${TYPEWRITER_FONT}`;
             ctx.fillStyle = '#000000';
             wrappedTitle.forEach((tLine) => {
@@ -663,17 +591,15 @@
                 y += Math.round(titleFontSize * 1.25);
             });
 
-            // Black underline rule below title
             y -= Math.round(titleFontSize * 0.25);
             ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(paddingX, y);
-            ctx.lineTo(paddingX + 260, y);
+            ctx.lineTo(paddingX + 220, y);
             ctx.stroke();
             y += Math.round(lineHeight * 1.05);
 
-            // Body text in Black American Typewriter
             ctx.font = `bold ${bodyFontSize}px ${TYPEWRITER_FONT}`;
             ctx.fillStyle = '#000000';
 
@@ -701,47 +627,38 @@
             canvas.height = 128;
             const ctx = canvas.getContext('2d');
 
-            const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-            if (isPlaying) {
-                grad.addColorStop(0, '#d4af37');
-                grad.addColorStop(1, '#f5d78e');
-            } else {
-                grad.addColorStop(0, '#1f1e24');
-                grad.addColorStop(1, '#2b2933');
-            }
-
-            ctx.fillStyle = grad;
+            ctx.fillStyle = isPlaying ? '#4a3825' : '#222228';
             ctx.beginPath();
-            ctx.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 56);
+            ctx.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 24);
             ctx.fill();
 
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = isPlaying ? '#ffffff' : '#d4af37';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = isPlaying ? '#d4af37' : '#55555d';
             ctx.stroke();
 
-            ctx.fillStyle = isPlaying ? '#151519' : '#d4af37';
+            ctx.fillStyle = isPlaying ? '#d4af37' : '#cccccc';
             ctx.beginPath();
-            ctx.arc(68, 64, 36, 0, Math.PI * 2);
+            ctx.arc(68, 64, 28, 0, Math.PI * 2);
             ctx.fill();
 
-            ctx.fillStyle = isPlaying ? '#f5d78e' : '#151519';
+            ctx.fillStyle = '#111115';
             if (isPlaying) {
-                ctx.fillRect(55, 48, 9, 32);
-                ctx.fillRect(72, 48, 9, 32);
+                ctx.fillRect(58, 50, 7, 28);
+                ctx.fillRect(71, 50, 7, 28);
             } else {
                 ctx.beginPath();
-                ctx.moveTo(59, 46);
-                ctx.lineTo(85, 64);
-                ctx.lineTo(59, 82);
+                ctx.moveTo(60, 48);
+                ctx.lineTo(80, 64);
+                ctx.lineTo(60, 80);
                 ctx.closePath();
                 ctx.fill();
             }
 
-            ctx.font = 'bold 28px "Plus Jakarta Sans", sans-serif';
-            ctx.fillStyle = isPlaying ? '#151519' : '#f5d78e';
+            ctx.font = 'bold 26px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
-            ctx.fillText(isPlaying ? 'PLAYING STORY...' : 'LISTEN TO STORY', 124, 65);
+            ctx.fillText(isPlaying ? 'PLAYING AUDIO...' : 'LISTEN TO STORY', 118, 65);
 
             const tex = new THREE.CanvasTexture(canvas);
             tex.colorSpace = THREE.SRGBColorSpace;
@@ -751,27 +668,6 @@
         const btnTexIdle = create3DAudioButtonTexture(false);
         const btnTexPlaying = create3DAudioButtonTexture(true);
 
-        // ==========================================
-        // Aspect Ratio Math: 3000 / 884 = 3.3936
-        // If we set the width in the 3D world to 24 units, the height must be 24 / 3.3936 = ~7.07
-        const bannerWidth = 20;
-        const bannerHeight = 5.89;
-
-        const bannerGeo = new THREE.PlaneGeometry(bannerWidth, bannerHeight);
-        const bannerMat = new THREE.MeshBasicMaterial({ 
-        map: textureLoader.load('images/Journey Download.png'), // Update with your actual filename
-        side: THREE.DoubleSide 
-        });
-
-const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
-
-// Position it on the Back Wall (above the first 4 easels)
-// x = 0 (centered)
-// y = 8.5 (high up, near the ceiling, above the easels which sit at y=2.5)
-// z = -19.9 (just a fraction in front of the actual back wall at -20 to prevent Z-fighting flickering)
-bannerMesh.position.set(0, 8.2, -19.9);
-
-scene.add(bannerMesh);
         // ==========================================
         // 5. PLACE ARTWORKS, PLAQUES & 3D AUDIO BUTTONS
         // ==========================================
@@ -818,30 +714,26 @@ scene.add(bannerMesh);
                 const plaqueGroup = new THREE.Group();
                 plaqueGroup.position.set(1.75, 0.18, 0);
 
-                const plaqueBackingGeo = new THREE.BoxGeometry(2.68, 3.48, 0.06);
-                const plaqueBacking = new THREE.Mesh(plaqueBackingGeo, brushedGoldMat);
-                plaqueBacking.position.z = 0.02;
+                const plaqueBackingGeo = new THREE.BoxGeometry(2.68, 3.48, 0.04);
+                const plaqueBacking = new THREE.Mesh(plaqueBackingGeo, plainWoodMat);
+                plaqueBacking.position.z = 0.01;
                 plaqueGroup.add(plaqueBacking);
 
                 const textTex = createTextTexture(item.text);
                 const plaqueGeo = new THREE.PlaneGeometry(2.58, 3.38);
                 const plaqueMat = new THREE.MeshBasicMaterial({ map: textTex });
                 const plaqueMesh = new THREE.Mesh(plaqueGeo, plaqueMat);
-                plaqueMesh.position.z = 0.055;
+                plaqueMesh.position.z = 0.035;
                 plaqueGroup.add(plaqueMesh);
                 stationGroup.add(plaqueGroup);
 
                 const btnGroup = new THREE.Group();
-                btnGroup.position.set(1.75, -1.86, 0.06);
+                btnGroup.position.set(1.75, -1.86, 0.04);
 
-                const btnBackingGeo = new THREE.BoxGeometry(1.66, 0.44, 0.05);
-                const btnBacking = new THREE.Mesh(btnBackingGeo, brushedGoldMat);
-                btnGroup.add(btnBacking);
-
-                const btnFaceGeo = new THREE.PlaneGeometry(1.6, 0.4);
+                const btnFaceGeo = new THREE.PlaneGeometry(1.6, 0.38);
                 const btnFaceMat = new THREE.MeshBasicMaterial({ map: btnTexIdle, transparent: true });
                 const btnFaceMesh = new THREE.Mesh(btnFaceGeo, btnFaceMat);
-                btnFaceMesh.position.z = 0.03;
+                btnFaceMesh.position.z = 0.02;
                 btnGroup.add(btnFaceMesh);
 
                 stationGroup.add(btnGroup);
@@ -878,95 +770,23 @@ scene.add(bannerMesh);
         }
 
         // ==========================================
-        // 5B. GALLERY BENCHES, DECORATIVE PLANTS & CENTER SCULPTURE
+        // 5B. HUMBLE WOODEN BENCHES & SIMPLE FERNS
         // ==========================================
         const colliders = [];
 
-        const leatherMat = new THREE.MeshStandardMaterial({
-            color: 0x261c18,
-            roughness: 0.42,
-            metalness: 0.08
-        });
-
-        const darkPlanterMat = new THREE.MeshStandardMaterial({
-            color: 0x1b1c20,
-            roughness: 0.5,
-            metalness: 0.2
-        });
-
-        const soilMat = new THREE.MeshStandardMaterial({
-            color: 0x2b1d14,
-            roughness: 0.95
-        });
-
-        const leafMat = new THREE.MeshStandardMaterial({
-            color: 0x2e6f40,
-            roughness: 0.45,
-            metalness: 0.05,
-            side: THREE.DoubleSide
-        });
-
-        const leafLightMat = new THREE.MeshStandardMaterial({
-            color: 0x488e56,
-            roughness: 0.4,
-            metalness: 0.05,
-            side: THREE.DoubleSide
-        });
-
-        function createGalleryBench() {
+        function createHumbleBench() {
             const bench = new THREE.Group();
-            const length = 3.6;
-            const depth = 1.25;
+            const length = 3.2;
+            const depth = 0.9;
 
-            const baseGeo = new THREE.BoxGeometry(length, 0.12, depth);
-            const baseMesh = new THREE.Mesh(baseGeo, darkWalnutMat);
-            baseMesh.position.y = 0.42;
-            bench.add(baseMesh);
+            const seatGeo = new THREE.BoxGeometry(length, 0.08, depth);
+            const seatMesh = new THREE.Mesh(seatGeo, plainWoodMat);
+            seatMesh.position.y = 0.45;
+            bench.add(seatMesh);
 
-            const trimGeo = new THREE.BoxGeometry(length + 0.02, 0.03, depth + 0.02);
-            const trimMesh = new THREE.Mesh(trimGeo, brushedGoldMat);
-            trimMesh.position.y = 0.35;
-            bench.add(trimMesh);
-
-            const cushionGeo = new THREE.BoxGeometry(length - 0.06, 0.18, depth - 0.06);
-            const cushionMesh = new THREE.Mesh(cushionGeo, leatherMat);
-            cushionMesh.position.y = 0.57;
-            bench.add(cushionMesh);
-
-            const seamGeo = new THREE.BoxGeometry(0.02, 0.19, depth - 0.04);
-            const seamMat = new THREE.MeshStandardMaterial({ color: 0x140e0b, roughness: 0.8 });
-            const buttonGeo = new THREE.SphereGeometry(0.025, 10, 10);
-
-            for (let i = -2; i <= 2; i++) {
-                const xPos = i * 0.62;
-                const seam = new THREE.Mesh(seamGeo, seamMat);
-                seam.position.set(xPos, 0.57, 0);
-                bench.add(seam);
-
-                [-0.28, 0.28].forEach((zPos) => {
-                    const btn = new THREE.Mesh(buttonGeo, brushedGoldMat);
-                    btn.position.set(xPos, 0.66, zPos);
-                    bench.add(btn);
-                });
-            }
-
-            const bolsterGeo = new THREE.CylinderGeometry(0.14, 0.14, length - 0.5, 20);
-            const bolster = new THREE.Mesh(bolsterGeo, leatherMat);
-            bolster.rotation.z = Math.PI / 2;
-            bolster.position.y = 0.88;
-            bench.add(bolster);
-
-            [-1.1, 0, 1.1].forEach((postX) => {
-                const postGeo = new THREE.CylinderGeometry(0.028, 0.028, 0.26, 12);
-                const post = new THREE.Mesh(postGeo, brushedGoldMat);
-                post.position.set(postX, 0.72, 0);
-                bench.add(post);
-            });
-
-            const legGeo = new THREE.CylinderGeometry(0.055, 0.035, 0.36, 14);
-            const footGeo = new THREE.CylinderGeometry(0.042, 0.045, 0.06, 14);
-            const legX = (length / 2) - 0.28;
-            const legZ = (depth / 2) - 0.22;
+            const legGeo = new THREE.BoxGeometry(0.08, 0.45, 0.08);
+            const legX = (length / 2) - 0.2;
+            const legZ = (depth / 2) - 0.15;
 
             [
                 [-legX, -legZ],
@@ -974,150 +794,59 @@ scene.add(bannerMesh);
                 [-legX, legZ],
                 [legX, legZ]
             ].forEach(([lx, lz]) => {
-                const leg = new THREE.Mesh(legGeo, darkWalnutMat);
-                leg.position.set(lx, 0.18, lz);
+                const leg = new THREE.Mesh(legGeo, plainWoodMat);
+                leg.position.set(lx, 0.225, lz);
                 bench.add(leg);
-
-                const foot = new THREE.Mesh(footGeo, brushedGoldMat);
-                foot.position.set(lx, 0.03, lz);
-                bench.add(foot);
             });
 
             return bench;
         }
 
-        function createDecorativePlant(scaleMultiplier = 1.0) {
-            const plantGroup = new THREE.Group();
+        function createSimpleFern() {
+            const fern = new THREE.Group();
+            const potGeo = new THREE.CylinderGeometry(0.35, 0.25, 0.6, 16);
+            const potMat = new THREE.MeshStandardMaterial({ color: 0x4a4540, roughness: 0.8 });
+            const pot = new THREE.Mesh(potGeo, potMat);
+            pot.position.y = 0.3;
+            fern.add(pot);
 
-            const potGeo = new THREE.CylinderGeometry(0.56, 0.38, 0.92, 24);
-            const potMesh = new THREE.Mesh(potGeo, darkPlanterMat);
-            potMesh.position.y = 0.46;
-            plantGroup.add(potMesh);
+            const foliageGeo = new THREE.SphereGeometry(0.5, 12, 12);
+            const foliageMat = new THREE.MeshStandardMaterial({ color: 0x3b583b, roughness: 0.7 });
+            const foliage = new THREE.Mesh(foliageGeo, foliageMat);
+            foliage.position.y = 0.75;
+            fern.add(foliage);
 
-            const rimGeo = new THREE.TorusGeometry(0.56, 0.032, 12, 32);
-            const rimMesh = new THREE.Mesh(rimGeo, brushedGoldMat);
-            rimMesh.rotation.x = Math.PI / 2;
-            rimMesh.position.y = 0.92;
-            plantGroup.add(rimMesh);
-
-            const soilGeo = new THREE.CylinderGeometry(0.53, 0.53, 0.04, 20);
-            const soilMesh = new THREE.Mesh(soilGeo, soilMat);
-            soilMesh.position.y = 0.89;
-            plantGroup.add(soilMesh);
-
-            for (let s = 0; s < 3; s++) {
-                const stemH = 0.85 + s * 0.22;
-                const stemGeo = new THREE.CylinderGeometry(0.03, 0.05, stemH, 10);
-                const stem = new THREE.Mesh(stemGeo, darkWalnutMat);
-                stem.position.set((s - 1) * 0.08, 0.9 + stemH / 2, (s % 2 === 0 ? 0.05 : -0.05));
-                stem.rotation.z = (s - 1) * 0.08;
-                plantGroup.add(stem);
-            }
-
-            const tiers = [
-                { count: 7, height: 1.15, tilt: 0.82, len: 1.05, width: 0.34, mat: leafMat },
-                { count: 6, height: 1.45, tilt: 0.55, len: 0.95, width: 0.30, mat: leafLightMat },
-                { count: 5, height: 1.72, tilt: 0.28, len: 0.78, width: 0.25, mat: leafLightMat }
-            ];
-
-            tiers.forEach((tier, tIdx) => {
-                for (let i = 0; i < tier.count; i++) {
-                    const angle = (i / tier.count) * Math.PI * 2 + (tIdx * 0.4);
-                    const frondPivot = new THREE.Group();
-                    frondPivot.position.set(0, tier.height, 0);
-                    frondPivot.rotation.y = angle;
-                    frondPivot.rotation.x = tier.tilt;
-
-                    const segLen = tier.len / 3;
-                    let segParent = frondPivot;
-
-                    for (let seg = 0; seg < 3; seg++) {
-                        const segWidth = tier.width * (1 - seg * 0.25);
-                        const bladeGeo = new THREE.PlaneGeometry(segWidth, segLen);
-                        bladeGeo.translate(0, segLen / 2, 0);
-
-                        const bladeMesh = new THREE.Mesh(bladeGeo, tier.mat);
-                        if (seg > 0) {
-                            bladeMesh.position.y = segLen;
-                            bladeMesh.rotation.x = 0.26;
-                        }
-                        segParent.add(bladeMesh);
-                        segParent = bladeMesh;
-                    }
-
-                    plantGroup.add(frondPivot);
-                }
-            });
-
-            plantGroup.scale.setScalar(scaleMultiplier);
-            return plantGroup;
+            return fern;
         }
 
         const benchLocations = [
-            { x: 0, z: -7.5, rotY: 0 },
-            { x: 0, z: 7.5,  rotY: Math.PI },
-            { x: 7.5, z: 0,  rotY: -Math.PI / 2 },
-            { x: -7.5, z: 0, rotY: Math.PI / 2 }
+            { x: 0, z: -8, rotY: 0 },
+            { x: 0, z: 8,  rotY: Math.PI },
+            { x: 8, z: 0,  rotY: -Math.PI / 2 },
+            { x: -8, z: 0, rotY: Math.PI / 2 }
         ];
 
         benchLocations.forEach(({ x, z, rotY }) => {
-            const bench = createGalleryBench();
+            const bench = createHumbleBench();
             bench.position.set(x, 0, z);
             bench.rotation.y = rotY;
             scene.add(bench);
-            colliders.push({ x, z, radius: 1.9 });
+            colliders.push({ x, z, radius: 1.6 });
         });
 
-        const plantLocations = [
-            { x: -6.5, z: -6.5, scale: 1.1 },
-            { x: 6.5,  z: -6.5, scale: 1.1 },
-            { x: -6.5, z: 6.5,  scale: 1.1 },
-            { x: 6.5,  z: 6.5,  scale: 1.1 },
-            { x: -16.5, z: -16.5, scale: 1.35 },
-            { x: 16.5,  z: -16.5, scale: 1.35 },
-            { x: -16.5, z: 16.5,  scale: 1.35 },
-            { x: 16.5,  z: 16.5,  scale: 1.35 }
+        const fernLocations = [
+            { x: -7, z: -7 },
+            { x: 7,  z: -7 },
+            { x: -7, z: 7 },
+            { x: 7,  z: 7 }
         ];
 
-        plantLocations.forEach(({ x, z, scale }, idx) => {
-            const plant = createDecorativePlant(scale);
-            plant.position.set(x, 0, z);
-            plant.rotation.y = idx * 1.1;
-            scene.add(plant);
-            colliders.push({ x, z, radius: 0.85 * scale });
+        fernLocations.forEach(({ x, z }) => {
+            const fern = createSimpleFern();
+            fern.position.set(x, 0, z);
+            scene.add(fern);
+            colliders.push({ x, z, radius: 0.7 });
         });
-
-        const centerFeature = new THREE.Group();
-        const plinthGeo = new THREE.CylinderGeometry(1.15, 1.3, 1.15, 8);
-        const plinthMesh = new THREE.Mesh(plinthGeo, darkPlanterMat);
-        plinthMesh.position.y = 0.575;
-        centerFeature.add(plinthMesh);
-
-        const plinthCapGeo = new THREE.CylinderGeometry(1.22, 1.22, 0.08, 8);
-        const plinthCap = new THREE.Mesh(plinthCapGeo, brushedGoldMat);
-        plinthCap.position.y = 1.18;
-        centerFeature.add(plinthCap);
-
-        const sculptureGroup = new THREE.Group();
-        sculptureGroup.position.y = 2.25;
-
-        const ring1Geo = new THREE.TorusGeometry(0.68, 0.09, 20, 64);
-        const ring1 = new THREE.Mesh(ring1Geo, brushedGoldMat);
-        sculptureGroup.add(ring1);
-
-        const ring2Geo = new THREE.TorusGeometry(0.46, 0.07, 20, 64);
-        const ring2 = new THREE.Mesh(ring2Geo, brushedGoldMat);
-        ring2.rotation.y = Math.PI / 2;
-        ring2.rotation.x = Math.PI / 4;
-        sculptureGroup.add(ring2);
-
-        const coreGeo = new THREE.OctahedronGeometry(0.22, 0);
-        const coreMesh = new THREE.Mesh(coreGeo, creamMatboardMat);
-        sculptureGroup.add(coreMesh);
-
-        centerFeature.add(sculptureGroup);
-        scene.add(centerFeature);
-        colliders.push({ x: 0, z: 0, radius: 1.55 });
 
         // ==========================================
         // 6. AUDIO CONTROLLER (3D BUTTONS & PROXIMITY)
@@ -1318,10 +1047,6 @@ scene.add(bannerMesh);
 
         renderer.setAnimationLoop(() => {
             const delta = clock.getDelta();
-            const elapsed = clock.getElapsedTime();
-
-            sculptureGroup.rotation.y = elapsed * 0.35;
-            sculptureGroup.position.y = 2.25 + Math.sin(elapsed * 1.5) * 0.06;
 
             if (moveState.left) playerRig.rotation.y += turnSpeed * delta;
             if (moveState.right) playerRig.rotation.y -= turnSpeed * delta;
@@ -1352,7 +1077,8 @@ scene.add(bannerMesh);
 
             exhibitStations.forEach((st) => {
                 if (st === activeStation && !st.audio.paused) {
-                    const pulse = 1 + Math.sin(elapsed * 5) * 0.035;
+                    const elapsed = clock.getElapsedTime();
+                    const pulse = 1 + Math.sin(elapsed * 5) * 0.03;
                     st.btnGroup.scale.set(pulse, pulse, 1);
                 } else {
                     st.btnGroup.scale.set(1, 1, 1);
